@@ -1,0 +1,29 @@
+\subsection{mCRL2}
+Let $R$ be the set of all robots; $R = \{Robot_1, Robot_2, Robot_3\}$.\\
+Let $P$ be the set of all positions that robots can move wafers from and to; $P = \{Tray, chuckIn, Meas, chuckOut, chuckEmpty_1, chuckEmpty_2\}$.
+\begin{enumerate}
+    \item $[true^{*}\cdot \delta]false$
+    \item a
+    \item a
+    \item 
+	    $[true^{*}\cdot PreMeasureWafer \cdot \overline{PreMeasured}^{*} \cdot PreMeasureWafer]false$\\
+	    $[true^{*}\cdot MeasureWafer \cdot \overline{Measured}^{*} \cdot MeasureWafer]false$\\
+	    $[true^{*}\cdot ProjectWafer \cdot \overline{Projected}^{*} \cdot ProjectWafer]false$\\
+	    $[true^{*}\cdot Swap \cdot \overline{Swapped}^{*} \cdot Swap]false$\\
+	    $\forall r:R.\forall p1,p2,p1',p2':P.[true^{*}\cdot RMoveFromTo(r, p1, p2) \cdot \overline{RIdle(r)}^{*} \cdot RMoveFromTo(r, p1', p2')]false$\\
+    \item a
+    \item $\forall r1,r2:R.\forall p1,p2:P.[true^{*}\cdot RMoveFromTo(r1, p1, chuckIn) \cdot \overline{PreMeasured}^{*} \cdot RMoveFromTo(r2, chuckIn, p2)]false$
+    \item a
+    \item a
+    \item $[true^{*}\cdot MeasureWafer\cdot \overline{Measured}^{*}\cdot Swap]false$
+    \item $[true^{*}\cdot ProjectWafer\cdot \overline{Projected}^{*}\cdot Swap]false$
+    \item $[true^{*}\cdot Calibrate\cdot \overline{Calibrated}^{*}\cdot Swap]false$
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+\end{enumerate}
