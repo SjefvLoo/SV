@@ -2,22 +2,29 @@
 
 \begin{enumerate}
 	\item $Finished$ must happen.
-	\item 
+	\item When $Finished$ happens:
 	\begin{enumerate}
-	\item a
-	\item a
-	\item a
+	\item The number of $RMoveFromTo(Robot_1, Tray, chuckIn)$ occurences is equal to the number of $RMoveFromTo(Robot_3, chuckOut, Tray)$ occurences;
+	\item The number of $RMoveFromTo(..,Meas,..)$ occurences is equal to the number of $RMoveFromTo(..,..,Meas)$ occurences;
+	\item This follows from a and b.
 	\end{enumerate}
-	\item a
-	\item a
-	\item a
-	\item a
-	\item a
-	\item a
-	\item a
-	\item a
-	\item a
-	\item a
+	\item After $RMoveFromTo(r, .., ..)$ no $RMoveFromTo(r, .., ..)$ will occur until a $RIdle(r)$ occurs for any robot $r$.\\After $Swap$ no $Swap$ will occur until a $Swapped$ occurs.\\After $PreMeasureWafer$ no $PreMeasureWafer$ will occur until $PreMeasured$ occurs.\\After $MeasureWafer$ no $MeasureWafer$ will occur until $Measured$ occurs.\\After $ProjectWafer$ no $ProjectWafer$ will occur until $Projected$ occurs.\\After $Calibrate$ no $Calibrate$ will occur until $Calibrated$ occurs.
+	\item For position p in $chuckIn, chuckOut, chuckEmpty_1, chuckEmpty_2$ holds:
+		\begin{itemize}
+			\item no $RMoveFromTo(.., p, ..)$ can occur until $RMoveFromTo(.., .., p)$ occurs;
+			\item no two $RMoveFromTo(.., p, ..)$ can occur without a $RMoveFromTo(.., .., p)$ in between;
+			\item no two $RMoveFromTo(..,..,p)$ can occur without a $RMoveFromTo(..,p,..)$ in between.
+		\end{itemize}
+	No two $RMoveFromTo(..,Meas,..)$ can occur without a $RMoveFromTo(..,..,Meas)$ in between.\\
+	No $RMoveFromTo(..,..,Meas)$ can occur until $RMoveFromTo(..,Meas,..)$ occurs.\\
+	No two $RMoveFromTo(..,..,Meas)$ can occur without a $RMoveFromTo(..,Meas,..)$.
+	\item Between every $RMoveFromTo(..,..,chuckIn)$ and $RMoveFromTo(..,chuckIn,Meas)$ a $PreMeasured$ must occur.
+	\item After $Measured$, $RMoveFromTo(..,Meas,..)$ can only occur if the number of $Swapped$ occurences is odd or $Projected$ occured where the number of $Swapped$ occurences between $Projected$ and $Measured$ is odd.
+	\item $Swap$ can not occur between $MeasureWafer$ and $Measured$.\\$Swap$ can not occur between $ProjectWafer$ and $Projected$. \\$Swap$ can not occur between $Calibrate$ and $Calibrated$.
+	\item $RMoveFromTo(.., Meas, ..)$ can not occur between $Calibrate$ and $Calibrated$.\\ $RMoveFromTo(.., Meas, ..)$ can not occur between $MeasureWafer$ and $Measured$.\\
+	\item $Swap$ can only occur if the number of $RMoveFromTo(.., Meas,..)$ occurences is equal to the number of $RMoveFromTo(..,..,Meas)$ occurences.
+	\item If the last occurence of $ProvideLotInfo(..,r,..)$ has $r="A"$, then $RMoveFrom(..,chuckIn,Meas)$ can only occur if the number of $Swap$ occurences is even.\\
+	If the last occurence of $ProvideLotInfo(..,r,..)$ has $r="B"$, then $RMoveFrom(..,chuckIn,Meas)$ can only occur if the number of $Swap$ occurences is odd.\\
 	\item a
 	\item a
 	\item a
