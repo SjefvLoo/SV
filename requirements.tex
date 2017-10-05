@@ -18,6 +18,7 @@ The requirements for the lot controller are as follows:
     \item Wafers at chuck \chuckIn are pre-measured before they are moved to chuck \chuckMeas.
     \item Wafers that are being projected have been measured at \chuckMeas and have not changed chucks since.
     \item \chuckMeas and \chuckProj will not be swapped when a measurement, projection or calibration is taking place.
+    \item Wafers will not be moved from \chuckMeas position during measurement or calibration.
     \item \chuckMeas and \chuckProj will only swap if both contain a wafer.
     \item A wafer from a lot is only projected if the chuck it is contained on is in the recipe for its corresponding lot.
     \item Measurement only takes place when a non-closing wafer is at \chuckMeas.
