@@ -1,10 +1,50 @@
-\documentclass{article}
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{url}
+\usepackage{xspace}
+
+% XXX: Maybe avoid xspace
+\newcommand{\tray}{$Tray$\xspace}
+\newcommand{\recipeOne}{$Recipe_1$\xspace}
+\newcommand{\recipeTwo}{$Recipe_2$\xspace}
+\newcommand{\recipeThree}{$Recipe_3$\xspace}
+\newcommand{\robotOne}{$Robot_1$\xspace}
+\newcommand{\robotTwo}{$Robot_2$\xspace}
+\newcommand{\robotThree}{$Robot_3$\xspace}
+\newcommand{\robotSwap}{$Swap$\xspace}
+\newcommand{\chuckIn}{$In$\xspace}
+\newcommand{\chuckOut}{$Out$\xspace}
+\newcommand{\chuckEmptyOne}{$Empty_1$\xspace}
+\newcommand{\chuckEmptyTwo}{$Empty_2$\xspace}
+\newcommand{\chuckA}{$A$\xspace}
+\newcommand{\chuckB}{$B$\xspace}
+\newcommand{\chuckMeas}{$Meas$\xspace}
+\newcommand{\chuckProj}{$Proj$\xspace}
+
+\title{2IMF30 - System Validation - ASML Case Study}
+\author{
+    Brouwers, R.F.G.M. (Robin) \qquad Student number: \texttt{0743220} \\
+    \texttt{r.f.g.m.brouwers@student.tue.nl}
+    \and
+    van Loo, S.V. (Sjef) \qquad Student number: \texttt{0000000} \\
+    \texttt{s.v.loo@student.tue.nl}
+    \and
+    Verhaegh, M.P.A. (Marc) \qquad Student number: \texttt{0772984} \\
+    \texttt{m.p.a.verhaegh.1@student.tue.nl}
+}
+
+
 \begin{document}
-\input{titlepage}
-\input{intro}
-\input{system_desc}
-\input{requirements}
-\input{ext_interactions}
-\input{req2int}
-\input{mCRL2}
+    \maketitle
+    \input{titlepage}
+    \input{intro}
+    \input{system_desc}
+    \input{requirements}
+    \input{ext_interactions}
+    \input{req2int}
+    \input{mCRL2}
 \end{document}
