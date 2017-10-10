@@ -1,14 +1,15 @@
 \section{External Interactions}
 Interactions describe in what manner the system behavior is controlled by the controller.
 External actions specifically describe the communication between external parts of the system and the controller.
-In this chapter the interactions of the controller, which consists of x sub controllers, with the external environment will be described. in order to proparly define the external interactions we specify a few variables:
-\\Let $P$ be the set of positions at which chucks are located; $P = \{chuckMeas, chuckOut, chuckEmpty_1, chuckEmpty_2\}$.
+In this chapter the interactions of the controller, which consists of x sub controllers, with the external environment will be described. In order to proparly define the external interactions we specify a few variables:
+\\Let $P$ be the set of positions at which wafers can be located; $P = \{Tray, chuckIn, chuckOut, chuckEmpty_1, chuckEmpty_2, Meas, Proj\}$.
 \\Let $R$ be the set of robots; $R = \{R_1,R_2,R_3\}$.\todo{define x}
 
 \subsection{Observational variables}
 In order to better specify the external interactions a number of observational variables are declared:
 \begin{itemize}
-\item Let $c(pos)$ denote the type of wafer that is on the chuck at position $pos$ where $pos \in P$. Possible values are: $none, closing, nonclosing$.
+\item Let $c(pos)$ denote the type of wafer and its state that is on the chuck at position $pos$ where $pos \in P \setminus \{Tray\}$. Possible values are: $none, closing, nonclosing, premeasured, measured, projected$. Initial value is $none$ for position $chuckIn, chuckOut, chuckEmpty_1, chuckEmpty_2$ and $closing$ for $Meas, Proj$.
+\item Let $lock(pos)$ denote weather or not the chuck at a position is ready to be used. $pos \in P$. Possible values are: $true, false$. Intial value is $false$ for all positions.
 \end{itemize}
 \subsection{Lot Controller to Machine}
 \begin{itemize}
@@ -23,38 +24,77 @@ In order to better specify the external interactions a number of observational v
 &(R_3, chuckEmpty_2, Meas),&\\
 &(R_3, Meas, chuckEmpty_2),&\\
 &(R_3, Meas, chuckOut)\}
-\end{align*}
-$RMoveFromTo$ has the following effect on the observational variables: 
-\begin{align*}
-&\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&RMoveFromTo(R_1, Tray, chuckIn)&\rightarrow&c(chuckIn) = nonclosing&&\\
-&RMoveFromTo(R_1, chuckOut, Tray)&\rightarrow&c(chuckOut) = none&&\\
-&RMoveFromTo(r, p_1, p_2), s = c(p_1)&\rightarrow&c(p_2) = s&\text{for any }r \in R\text{ and }p_1,p_2 \in P&\\
-&&&c(p_1)=none&&
-\end{align*}
+\end{align*}\\
+Effect on $c(pos)$:\\
+If $p_1 = Tray$ and $p_2 = chuckIn$ then $c(chuckIn) = nonclosing$.\\
+If $p_1 = chuckOut$ and $p_2 = Tray$ then $c(chuckOut) = none$.\\
+In all other cases the value of $c(p_2)$ becomes the value of $c(p_1)$ and $c(p_1)$ becomes none.
+Effect on $lock(pos)$:\\
+If $p_1 \neq Tray$ then $lock(p_1) = true$.\\
+If $p_2 \neq Tray$ then $lock(p_2) = true$.\\
 \item $Calibrate$
 \\Request calibration to be performed.
+Effect on $lock(pos)$:\\
+$lock(Meas) = true$ and $lock(Proj) = true$.\\
 \item $PreMeasureWafer$
-\\Request pre-measurement to be performed on the wafer at $chuckIn$.
+\\Request pre-measurement to be performed on the wafer at $chuckIn$.\\
+Effect on $c(pos)$:\\
+$c(chuckIn) = premeasured$\\
+Effect on $lock(pos)$:\\
+$lock(chuckIn) = true$.\\
 \item $MeasureWafer$
-\\Request measurement to be performed on the wafer at $Meas$ position.
+\\Request measurement to be performed on the wafer at $Meas$ position.\\
+Effect on $c(pos)$:\\
+$c(Meas) = measured$\\
+Effect on $lock(pos)$:\\
+$lock(Meas) = true$.\\
 \item $ProjectWafer$
-\\Request an image projection of the wafer at the $Proj$ position.
+\\Request an image projection of the wafer at the $Proj$ position.\\
+Effect on $c(pos)$:\\
+$c(Proj) = projected$\\
+Effect on $lock(pos)$:\\
+$lock(Proj) = true$.\\
 \item $Swap$
-\\Request a swap of the chucks present on the $Meas$ and $Proj$ position.
-$Swap$ has the following effect on the observational variables:
-\begin{align*}
-&\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&Swap, m = c(Meas), p = c(Proj)&\rightarrow&c(Proj) = m&&\\
-&&&c(Meas) = p&&
-\end{align*}
+\\Request a swap of the chucks present on the $Meas$ and $Proj$ position.\\
+Effect on $c(pos)$:\\
+The values of $c(Meas)$ and $c(Proj)$ swap.\\
+Effect on $lock(pos)$:\\
+$lock(Meas) = true$ and $lock(Proj) = true$.\\
 \end{itemize}
 
 \subsection{Machine to Lot Controller}
-\todo{copy from gdocs}
+\begin{itemize}
+\item $ProvideLotInfo(n, recipe, calibrate)$
+\\Provide the lot controller with info about the current lot in the tray. Where $n$ equals the number of wafers in the lot, $recipe$ indicated the recipe for the lot (can have value $A, B$ or $AB$). $calibrate$ is a boolean, when $true$ the system needs to calibrate before starting on this lot.
+\item $Ridle(r)$
+\\Indicates that robot $r$ is idle. $r \in R$.\\
+Effect on $Proj(pos)$:\\
+Let $from$ and $to$ be the variables used in the last $RMoveFromTo$ occurance with robot $r$.\\
+$lock(from) = false$ and $lock(to) = false$.
+\item $SwapIdle$
+\\Indicates that $Swap$ action has finished.
+\\Effect on $lock(pos)$:\\
+$lock(Meas) = false$ and $lock(Proj) = false$.\\
+\item $PreMeasured$
+\\Indicates that $PreMeasure$ has finished.\\
+Effect on $lock(pos)$:\\
+$lock(chuckIn) = false$.\\
+\item $Measured$
+\\Indicates that $MeasureWafer$ has finished.\\
+Effect on $lock(pos)$:\\
+$lock(Meas) = false$.\\
+\item $Projected$
+\\Indicates that $ProjectWafer$ has finished.\\
+Effect on $lock(pos)$:\\
+$lock(Proj) = false$.\\
+\item $Calibrated$
+\\Indicates that $Calibrate$ has finished.\\
+Effect on $lock(pos)$:\\
+$lock(Proj) = false$ and $lock(Meas) = false$.\\
+\end{itemize}
 
 \subsection{Lot Controller to User}
-\todo{copy from gdocs}
-
-\subsection{User to Lot Controller}
-\todo{copy from gdocs}
+\begin{itemize}
+\item $Finished$
+\\The system is finished with the current Tray and indicates this to the operator.
+\end{itemize}
