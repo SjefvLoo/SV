@@ -1,9 +1,45 @@
 \subsection{mCRL2}
 Let $R$ be the set of all robots; $R = \{Robot_1, Robot_2, Robot_3\}$.\\
-Let $P$ be the set of all positions that robots can move wafers from and to; $P = \{Tray, chuckIn, Meas, chuckOut, chuckEmpty_1, chuckEmpty_2\}$.
+Let $P$ be the set of all positions that robots can move wafers from and to; $P = \{Tray, chuckIn, Meas, chuckOut, chuckEmpty_1, chuckEmpty_2\}$.\\
+Let $P' = P \backslash \{Tray\}$\\
+Let $S$ be the values observational variable $c(p)$ can take; $S = \{none, closing, nonclosing, premeasured, measured, projected\}$.\\
 \begin{enumerate}
-    \item a
-    \item a
+    \item $[!Finished^{*}]<true^{*} \cdot Finished>true$
+    \item \begin{enumerate}
+    	\item \begin{align*}
+    	&\nu X(i:Int = 0) . &\\
+    	&[Finished](i \approx 0) \\
+    	&\wedge [RMoveFromTo(Robot_1, Tray, chuckIn)]X(i+1) \\
+    	&\wedge [RMoveFromTo(Robot_3, chuckOut, Tray)]X(i-1) \\
+    	&\wedge [\overline{Finished} \cap \overline{RMoveFromTo(Robot_1, Tray, chuckIn)}\cap \overline{RMoveFromTo(Robot_3, chuckOut, Tray)}]X(i)
+    	\end{align*}
+    	\item 
+    	\begin{align*}
+    	&\nu X(c:P'\rightarrow S = (\lambda p:P'.none)[Meas\rightarrow closing][Proj \rightarrow closing]).\\
+    	&([RMoveFromTo(Robot_1, Tray, chuckIn)]X(c[chuckIn \rightarrow nonclosing])\\
+    	&\wedge [RMoveFromTo(Robot_3, chuckOut, Tray)]X(c[chuckOut \rightarrow none])\\
+    	&\wedge \forall r : R, from, to : P'.([RMoveFromTo(r, from, to)]X(c[to \rightarrow c(from)][from \rightarrow none]))\\
+    	&\wedge [PreMeasureWafer]X(c[chuckIn \rightarrow premeasured])\\
+    	&\wedge [MeasureWafer]X(c[Meas \rightarrow measured])\\
+    	&\wedge [ProjectWafer]X(c[Proj \rightarrow projected])\\
+    	&\wedge [Swap]X(c[Meas \rightarrow c(Proj)][Proj \rightarrow c(Meas)])\\
+    	&\wedge [true \backslash \{RMoveFromTo, PreMeasureWafer, MeasureWafer, ProjectWafer, Swap\}]X(c))\\
+    	&\wedge [Finished](c(Meas)\approx closing \wedge c(Proj) \approx closing)
+    	\end{align*}
+    	\item
+    	\begin{align*}
+    	&\nu X(c:P'\rightarrow S = (\lambda p:P'.none)[Meas\rightarrow closing][Proj \rightarrow closing]).\\
+    	&([RMoveFromTo(Robot_1, Tray, chuckIn)]X(c[chuckIn \rightarrow nonclosing])\\
+    	&\wedge [RMoveFromTo(Robot_3, chuckOut, Tray)]X(c[chuckOut \rightarrow none])\\
+    	&\wedge \forall r : R, from, to : P'.([RMoveFromTo(r, from, to)]X(c[to \rightarrow c(from)][from \rightarrow none]))\\
+    	&\wedge [PreMeasureWafer]X(c[chuckIn \rightarrow premeasured])\\
+    	&\wedge [MeasureWafer]X(c[Meas \rightarrow measured])\\
+    	&\wedge [ProjectWafer]X(c[Proj \rightarrow projected])\\
+    	&\wedge [Swap]X(c[Meas \rightarrow c(Proj)][Proj \rightarrow c(Meas)])\\
+    	&\wedge [true \backslash \{RMoveFromTo, PreMeasureWafer, MeasureWafer, ProjectWafer, Swap\}]X(c))\\
+    	&\wedge [Finished](c(chuckIn)\approx none \wedge c(chuckOut) \approx none)
+    	\end{align*}
+    \end{enumerate}
     \item 
 	    $[true^{*}\cdot PreMeasureWafer \cdot \overline{PreMeasured}^{*} \cdot PreMeasureWafer]false$\\
 	    $[true^{*}\cdot MeasureWafer \cdot \overline{Measured}^{*} \cdot MeasureWafer]false$\\

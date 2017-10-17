@@ -10,7 +10,8 @@
 	\end{enumerate}
 	\item 
 		\begin{itemize}
-			\item After $RMoveFromTo(r, from, to)$ no $RMoveFromTo(r', from', to')$ will occur where $r=r'$ until a $RIdle(r)$ occurs. \\This holds for any robot $r$ and $r'$ and any position $from, to, from'$ and $to'$.
+			\item After $RMoveFromTo(r, from, to)$ no $RIdle(r', from', to')$ will occur such where $r=r'$ and ($from \neq from'$ or $to \neq to'$).\\This holds for any robot $r$ and $r'$ and any position $from, to, from'$ and $to'$.
+			\item After $RMoveFromTo(r, from, to)$ no $RMoveFromTo(r', from', to')$ will occur where $r=r'$ until a $RIdle(r, from, to)$ occurs. \\This holds for any robot $r$ and $r'$ and any position $from, to, from'$ and $to'$.
 			\item After $Swap$ no $Swap$ will occur until a $Swapped$ occurs.
 			\item After $PreMeasureWafer$ no $PreMeasureWafer$ will occur until $PreMeasured$ occurs.
 			\item After $MeasureWafer$ no $MeasureWafer$ will occur until $Measured$ occurs.
