@@ -3,51 +3,54 @@ Interactions describe in what manner the system behavior is controlled by the co
 External actions specifically describe the communication between external parts of the system and the controller.
 In this chapter the interactions of the controller, which consists of $6$ sub controllers, with the external environment will be described.
 In order to properly define the external interactions we specify a few variables:
-\\Let $P$ be the set of positions at which chucks are located; $P = \{chuckMeas, chuckOut, chuckEmpty_1, chuckEmpty_2\}$.
+\\Let $P$ be the set of positions at which chucks are located; $P = \{\mathit{p_\mathit{tray}}, p_\mathit{in}, p_\mathit{out}, p_\mathit{meas}, p_\mathit{proj}, p_{\mathit{empty}_1}, p_{\mathit{empty}_2}$.
 \\Let $R$ be the set of robots; $R = \{R_1,R_2,R_3\}$.
 
 \subsection{Observational variables}
 In order to better specify the external interactions a number of observational variables are declared:
 \begin{itemize}
-\item Let $c(pos)$ denote the type of wafer that is on the chuck at position $pos$ where $pos \in P$. Possible values are: $none, closing, nonclosing$.
+\item Let $c : P \mapsto \left\{\mathit{none}, \mathit{closing}, \mathit{nonclosing}\right\}$ be a function.
+Then $c(\mathit{pos})$ denotes the type of wafer that is on the chuck at position $\mathit{pos}$, where $\mathit{pos} \in P$.
 \end{itemize}
 \subsection{Lot Controller to Machine}
 \begin{itemize}
-\item $RMoveFromTo(r, p_1, p-2)$
-\\Request robot $r$ to move the wafer that is located at position $p_1$ to position $p_2$. For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted. Accepted argument combinations: 
+\item $\mathit{RMoveFromTo}(r, p_1, p_2)$
+\\Request robot $r$ to move the wafer that is located at position $p_1$ to position $p_2$ where $r \in R$ and $p_1, p_2 \in P$.
+For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted.
+Only the following argument combinations are accepted:
 \begin{align*}
-\{ & (R_1, Tray, chuckIn),&\\
-& (R_1, chuckOut, Tray),&\\
-&(R_2, chuckIn, Meas),&\\
-&(R_2, Meas, chuckEmpty_1),&\\
-&(R_2, chuckEmpty_1, Meas),&\\
-&(R_3, chuckEmpty_2, Meas),&\\
-&(R_3, Meas, chuckEmpty_2),&\\
-&(R_3, Meas, chuckOut)\}
+\{ & (R_1, p_\mathit{tray}, p_\mathit{in}),&\\
+& (R_1, p_\mathit{out}, p_\mathit{tray}),&\\
+&(R_2, p_\mathit{in}, p_\mathit{meas}),&\\
+&(R_2, p_\mathit{meas}, p_{\mathit{empty}_1}),&\\
+&(R_2, p_{\mathit{empty}_1}, p_\mathit{meas}),&\\
+&(R_3, p_{\mathit{empty}_2}, p_\mathit{meas}),&\\
+&(R_3, p_\mathit{meas}, p_{\mathit{empty}_2}),&\\
+&(R_3, p_\mathit{meas}, p_\mathit{out})\}
 \end{align*}
-$RMoveFromTo$ has the following effect on the observational variables: 
+$\mathit{RMoveFromTo}$ has the following effect on the observational variables: 
 \begin{align*}
 &\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&RMoveFromTo(R_1, Tray, chuckIn)&\rightarrow&c(chuckIn) = nonclosing&&\\
-&RMoveFromTo(R_1, chuckOut, Tray)&\rightarrow&c(chuckOut) = none&&\\
-&RMoveFromTo(r, p_1, p_2), s = c(p_1)&\rightarrow&c(p_2) = s&\text{for any }r \in R\text{ and }p_1,p_2 \in P&\\
+&\mathit{RMoveFromTo}(R_1, p_\mathit{tray}, p_\mathit{in})&\rightarrow&c(p_\mathit{in}) = \mathit{nonclosing}&&\\
+&\mathit{RMoveFromTo}(R_1, p_\mathit{out}, p_\mathit{tray})&\rightarrow&c(p_\mathit{out}) = \mathit{none}&&\\
+&\mathit{RMoveFromTo}(r, p_1, p_2), s = c(p_1)&\rightarrow&c(p_2) = s&\text{for any }r \in R\text{ and }p_1,p_2 \in P&\\
 &&&c(p_1)=none&&
 \end{align*}
-\item $Calibrate$
+\item $\mathit{Calibrate}$
 \\Request calibration to be performed.
-\item $PreMeasureWafer$
-\\Request pre-measurement to be performed on the wafer at $chuckIn$.
-\item $MeasureWafer$
-\\Request measurement to be performed on the wafer at $Meas$ position.
-\item $ProjectWafer$
-\\Request an image projection of the wafer at the $Proj$ position.
-\item $Swap$
-\\Request a swap of the chucks present on the $Meas$ and $Proj$ position.
-$Swap$ has the following effect on the observational variables:
+\item $\mathit{PreMeasureWafer}$
+\\Request pre-measurement to be performed on the wafer at \chuckIn.
+\item $\mathit{MeasureWafer}$
+\\Request measurement to be performed on the wafer at \chuckMeas.
+\item $\mathit{ProjectWafer}$
+\\Request an image projection of the wafer at \chuckProj.
+\item $\mathit{Swap}$
+\\Request a swap of the chucks present on the \chuckMeas and \chuckProj.
+$\mathit{Swap}$ has the following effect on the observational variables:
 \begin{align*}
 &\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&Swap, m = c(Meas), p = c(Proj)&\rightarrow&c(Proj) = m&&\\
-&&&c(Meas) = p&&
+&Swap, m = c(p_\mathit{meas}), p = c(p_\mathit{proj})&\rightarrow&c(p_\mathit{proj}) = m&&\\
+&&\rightarrow&c(p_\mathit{meas}) = p&&
 \end{align*}
 \end{itemize}
 
