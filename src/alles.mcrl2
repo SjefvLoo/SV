@@ -1,0 +1,42 @@
+sort
+	Robot = struct r1|r2|r3;
+	T = struct ptray|pin|pout|pmeas|pproj|pempty1|pempty2;
+	Recipe = struct Recipe1|Recipe2|Recipe3;
+act 
+	RMoveFromTo: Robot # T # T;
+	Swap;
+	PreMeasure;
+	Measure;
+	Project;
+	Calibrate;
+	ProvideLotInfo: Nat # Recipe # Bool;
+	Finished;
+	TrayReady, sTrayReady, rTrayReady;
+	WaferReadyAtIn, rWaferReadyAtIn, sWaferReadyAtIn;
+	WaferReadyAtOut, rWaferReadyAtOut, sWaferReadyAtOut;
+proc
+	LotController(n:Nat) = (sTrayReady . (n>0)->LotController(Int2Nat(n-1)));
+	InOutComponent(n:Nat, rin:Bool) = 
+			((rin)->(sWaferReadyAtIn . InOutComponent(n, false)) <> (rTrayReady . RMoveFromTo(r1, ptray, pin) . PreMeasure .InOutComponent(n, true))) + 
+			rWaferReadyAtOut . RMoveFromTo(r1, pout, ptray).((n>0)->InOutComponent(Int2Nat(n-1),rin)<>Finished);
+	ProjectionComponent = rWaferReadyAtIn . RMoveFromTo(r2, pin, pmeas) . Measure . Swap. Project . Swap . RMoveFromTo(r3, pmeas, pout) . sWaferReadyAtOut . ProjectionComponent ;
+init
+	allow({
+		RMoveFromTo,
+		Swap,
+		PreMeasure,
+		Measure,
+		Project,
+		Calibrate,
+		ProvideLotInfo,
+		Finished,
+		
+		TrayReady,
+		WaferReadyAtIn,
+		WaferReadyAtOut
+		},
+	comm({
+	sTrayReady | rTrayReady -> TrayReady,
+	sWaferReadyAtIn | rWaferReadyAtIn -> WaferReadyAtIn,
+	sWaferReadyAtOut | rWaferReadyAtOut -> WaferReadyAtOut
+	}, LotController(2) || InOutComponent(2,false) || ProjectionComponent));

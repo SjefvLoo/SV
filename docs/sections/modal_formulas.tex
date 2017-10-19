@@ -4,57 +4,129 @@
     \item \begin{enumerate}
         \item \begin{align*}
             &\nu X(i:Int = 0) . & \\
-            &[Finished](i \approx 0) \\
-            &\wedge [RMoveFromTo(Robot_1, Tray, chuckIn)]X(i+1) \\
-            &\wedge [RMoveFromTo(Robot_3, chuckOut, Tray)]X(i-1) \\
-            &\wedge [\overline{Finished} \cap \overline{RMoveFromTo(Robot_1, Tray, chuckIn)}\cap \overline{RMoveFromTo(Robot_3, chuckOut, Tray)}]X(i)
+            &[RMoveFromTo(r_1, p_\mathit{tray}, p_\mathit{in})]X(i+1) \\
+            &\wedge [RMoveFromTo(r_1, p_\mathit{out}, Tray)]X(i-1) \\
+            &\wedge [\overline{\{Finished,RMoveFromTo(r_1, p_\mathit{tray}, p_\mathit{in}),RMoveFromTo(r_1, p_\mathit{out}, Tray)\}}]X(i) \\
+            &\wedge [Finished](i \approx 0)
         \end{align*}
         \item \begin{align*}
-            &\nu X(c:P'\rightarrow S = (\lambda p:P'.none)[Meas\rightarrow closing][Proj \rightarrow closing]). \\
-            &([RMoveFromTo(Robot_1, Tray, chuckIn)]X(c[chuckIn \rightarrow nonclosing]) \\
-            &\wedge [RMoveFromTo(Robot_3, chuckOut, Tray)]X(c[chuckOut \rightarrow none]) \\
-            &\wedge \forall r : R, from, to : P'.([RMoveFromTo(r, from, to)]X(c[to \rightarrow c(from)][from \rightarrow none])) \\
-            &\wedge [PreMeasureWafer]X(c[chuckIn \rightarrow premeasured]) \\
-            &\wedge [MeasureWafer]X(c[Meas \rightarrow measured]) \\
-            &\wedge [ProjectWafer]X(c[Proj \rightarrow projected]) \\
-            &\wedge [Swap]X(c[Meas \rightarrow c(Proj)][Proj \rightarrow c(Meas)]) \\
-            &\wedge [true \backslash \{RMoveFromTo, PreMeasureWafer, MeasureWafer, ProjectWafer, Swap\}]X(c)) \\
-            &\wedge [Finished](c(Meas)\approx closing \wedge c(Proj) \approx closing)
+            &\nu X(C : Set(P) = \{p_\mathit{meas},p_\mathit{proj}\}).\\
+            & \forall r:R, p_1, p_2 : P . [RMoveFromTo(r, p_1, p_2)](if(p_1 \in C, X(C\backslash\{p_1\}\cup\{p_2\}), X(C))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C\backslash\{p_\mathit{proj}\} \cup \{p_\mathit{meas}\}))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C\backslash\{p_\mathit{meas}\} \cup \{p_\mathit{proj}\}))\\
+            &\wedge [\overline{\{RMoveFromTo, Swap, Finished\}}]X(C)\\
+            &\wedge [Finished](C \approx \{p_\mathit{meas},p_\mathit{proj}\})
         \end{align*}
-        \item \begin{align*}
-            &\nu X(c:P'\rightarrow S = (\lambda p:P'.none)[Meas\rightarrow closing][Proj \rightarrow closing]). \\
-            &([RMoveFromTo(Robot_1, Tray, chuckIn)]X(c[chuckIn \rightarrow nonclosing]) \\
-            &\wedge [RMoveFromTo(Robot_3, chuckOut, Tray)]X(c[chuckOut \rightarrow none]) \\
-            &\wedge \forall r : R, from, to : P'.([RMoveFromTo(r, from, to)]X(c[to \rightarrow c(from)][from \rightarrow none])) \\
-            &\wedge [PreMeasureWafer]X(c[chuckIn \rightarrow premeasured]) \\
-            &\wedge [MeasureWafer]X(c[Meas \rightarrow measured]) \\
-            &\wedge [ProjectWafer]X(c[Proj \rightarrow projected]) \\
-            &\wedge [Swap]X(c[Meas \rightarrow c(Proj)][Proj \rightarrow c(Meas)]) \\
-            &\wedge [true \backslash \{RMoveFromTo, PreMeasureWafer, MeasureWafer, ProjectWafer, Swap\}]X(c)) \\
-            &\wedge [Finished](c(chuckIn)\approx none \wedge c(chuckOut) \approx none)
-        \end{align*}
+        \item Follows from a and b
     \end{enumerate}
     \item \begin{enumerate}
-        \item $\forall r:R.\forall p1,p2,p1',p2':P.[true^{*}\cdot RMoveFromTo(r, p1, p2) \cdot \overline{RIdle(r)}^{*} \cdot RMoveFromTo(r, p1', p2')]false$
+        \item $\forall r:R., p_1,p_2,p_1',p+2':P.[true^{*}\cdot RMoveFromTo(r, p_1, p_2) \cdot \overline{RIdle(r, p_1, p_2)}^{*} \cdot RMoveFromTo(r, p_1', p_2')]false$
         \item $[true^{*}\cdot Swap \cdot \overline{Swapped}^{*} \cdot Swap]false$
         \item $[true^{*}\cdot PreMeasureWafer \cdot \overline{PreMeasured}^{*} \cdot PreMeasureWafer]false$
         \item $[true^{*}\cdot MeasureWafer \cdot \overline{Measured}^{*} \cdot MeasureWafer]false$
         \item $[true^{*}\cdot ProjectWafer \cdot \overline{Projected}^{*} \cdot ProjectWafer]false$
-        \item XXX calibrate
+        \item $[true^{*}\cdot Calibrate \cdot \overline{Calibrated}^{*} \cdot Calibrate]false$
     \end{enumerate}
-    \item XXX
-    \item $\forall r1,r2:R.\forall p1,p2:P.[true^{*}\cdot RMoveFromTo(r1, p1, chuckIn) \cdot \overline{PreMeasured}^{*} \cdot RMoveFromTo(r2, chuckIn, p2)]false$
-    \item XXX
-    \item XXX
-    \item $[true^{*}\cdot MeasureWafer\cdot \overline{Measured}^{*}\cdot Swap]false$
-    \item $[true^{*}\cdot ProjectWafer\cdot \overline{Projected}^{*}\cdot Swap]false$
-    \item $[true^{*}\cdot Calibrate\cdot \overline{Calibrated}^{*}\cdot Swap]false$
-    \item XXX
-    \item XXX
-    \item XXX
-    \item XXX
-    \item XXX
-    \item XXX
-    \item XXX
-    \item XXX
+        \item \begin{align*}
+            &\nu X(w:T\mapsto \mathbb{B} = (\lambda p:T.false)[p_\mathit{meas} \rightarrow true][p_\mathit{proj} \rightarrow true]). \\
+            &\wedge \forall r:R, p_1,p_2 :T.[RMoveFromTo(r, p_1,p_2)]((p_1 \approx p_\textit{tray} \vee w(p_1)) \wedge (p_2 \approx p_\textit{tray} \vee \lnot w(p_2)) \wedge X(w[p_1\rightarrow false]))\\
+            &\wedge \forall r:R, p_1,p_2 :T.[RIdle(r, p_1,p_2)]X(w[p_2\rightarrow true])\\
+            &\wedge [\overline{RMoveFromTo, RIdle}]X(w)
+        \end{align*}
+    \item $\forall r,r' :R, p_1,p_1' : T, p_2:P.[true^{*}\cdot RIdle(r, p_1, p_2) \cdot 	(\forall r'':R, p_3:T. \overline{RMoveFromTo(r'', p_2, p_3)})\cdot RIdle(r', p_1', p_2)]false$
+    \item $[true^{*}\cdot RMoveFromTo(r_1, p_\mathit{tray}, p_\mathit{in}) \cdot \overline{PreMeasured}^{*} \cdot RMoveFromTo(r_2, p_\mathit{in}, p_\mathit{meas})]false$
+    \item \begin{align*}
+    	&\nu X(mm:\mathbb{B} = false, pm:\mathbb{B}=false).\\
+    	&[Measured]X(true, pm)\\
+    	&\wedge [Swapped]X(pm, mm)\\
+    	&\wedge \forall r:R, p_1, p_2:T.[RMoveFromTo(r, p_1, p_2)](if(p_1 \approx p_\mathit{meas}, X(false, pm), X(mm, pm))\\
+    	&\wedge [\overline{\{Measured, Swapped, RMoveFromTo, Project\}}]X(mm, pm)\\
+    	&\wedge [Project](pm \approx true \wedge X(mm, pm))
+    \end{align*}
+        \item \begin{align*}
+            &\nu X(C : Set(P) = \{p_\mathit{meas},p_\mathit{proj}\}).\\
+            & \forall r:R, p_1, p_2 : P . [RMoveFromTo(r, p_1, p_2)]&((p_2 \in \{p_\mathit{empty1}, p_\mathit{empty2}\} \implies p_1 \in C)\\
+            &&\wedge (if(p_1 \in C, X(C\backslash\{p_1\}\cup\{p_2\}), X(C))) \\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C\backslash\{p_\mathit{proj}\} \cup \{p_\mathit{meas}\}))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C\backslash\{p_\mathit{meas}\} \cup \{p_\mathit{proj}\}))\\
+            &\wedge [\overline{\{RMoveFromTo, Swap, Finished\}}]X(C)
+        \end{align*}
+    \item \begin{align*}
+	    &[true^{*}\cdot MeasureWafer\cdot \overline{Measured}^{*}\cdot Swap]false\\
+		&\wedge [true^{*}\cdot ProjectWafer\cdot \overline{Projected}^{*}\cdot Swap]false\\
+	    &\wedge [true^{*}\cdot Calibrate\cdot \overline{Calibrated}^{*}\cdot Swap]false
+    \end{align*}
+    \item Implemented by 4.
+    \item \begin{align*}
+            &\nu X(w:T\mapsto \mathbb{B} = (\lambda p:T.false)[p_\mathit{meas} \rightarrow true][p_\mathit{proj} \rightarrow true]). \\
+            &\wedge \forall r:R, p_1,p_2 :T.[RMoveFromTo(r, p_1,p_2)]X(w[p_1\rightarrow false])\\
+            &\wedge \forall r:R, p_1,p_2 :T.[RIdle(r, p_1,p_2)]X(w[p_2\rightarrow true])\\
+            &\wedge [\overline{RMoveFromTo, RIdle}]X(w)\\
+            &\wedge [Swap](w(p_\textit{meas}) \wedge w(p_\textit{proj}))
+        \end{align*}
+    \item \begin{align*}
+    	&\nu X(rec:Q = Recipe_3, even:\mathbb{B} = true).\\
+  		&\forall n:\mathbb{N}, r:Q, b:\mathbb{B}.[ProvideLotInfo(n,r,b)](X(r,even))\\
+  		&\wedge [Swapped]X(rec, \lnot even)\\
+  		&\wedge [\overline{\{ProvideLotInfo, Swapped, Project\}}]X(rec, even)\\
+  		&\wedge [Project]((rec \approx Recipe_1 \implies even) \wedge (rec \approx Recipe_2 \implies \lnot even) \wedge X(rec, even))
+    \end{align*}
+    \item \begin{align*}
+            &\nu X(w:T\mapsto \mathbb{B} = (\lambda p:T.false)[p_\mathit{meas} \rightarrow true][p_\mathit{proj} \rightarrow true]). \\
+            &\wedge \forall r:R, p_1,p_2 :T.[RMoveFromTo(r, p_1,p_2)]X(w[p_1\rightarrow false])\\
+            &\wedge \forall r:R, p_1,p_2 :T.[RIdle(r, p_1,p_2)]X(w[p_2\rightarrow true])\\
+            &\wedge [\overline{RMoveFromTo, RIdle}]X(w)\\
+            &\wedge [MeasureWafer](w(p_\textit{meas}))\\
+            \wedge\\
+            &\nu X(C : Set(P) = \{p_\mathit{meas},p_\mathit{proj}\}).\\
+            & \forall r:R, p_1, p_2 : P . [RMoveFromTo(r, p_1, p_2)](if(p_1 \in C, X(C\backslash\{p_1\}\cup\{p_2\}), X(C))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C\backslash\{p_\mathit{proj}\} \cup \{p_\mathit{meas}\}))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C\backslash\{p_\mathit{meas}\} \cup \{p_\mathit{proj}\}))\\
+            &\wedge [\overline{\{RMoveFromTo, Swap\}}]X(C)\\
+            &\wedge [MeasureWafer](p_\mathit{meas} \notin C)
+        \end{align*}
+    \item \begin{align*}
+    		&\nu X(C : Set(P) = \{p_\mathit{meas},p_\mathit{proj}\}).\\
+            & \forall r:R, p_1, p_2 : P . [RMoveFromTo(r, p_1, p_2)](if(p_1 \in C, X(C\backslash\{p_1\}\cup\{p_2\}), X(C))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C\backslash\{p_\mathit{proj}\} \cup \{p_\mathit{meas}\}))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C\backslash\{p_\mathit{meas}\} \cup \{p_\mathit{proj}\}))\\
+            &\wedge [\overline{\{RMoveFromTo, Swap\}}]X(C)\\
+            &\wedge [ProjectWafer](p_\mathit{proj})
+        \end{align*}
+    \item \begin{align*}
+    		&\nu X(C : Set(P) = \{p_\mathit{meas},p_\mathit{proj}\}).\\
+            & \forall r:R, p_1, p_2 : P . [RMoveFromTo(r, p_1, p_2)](if(p_1 \in C, X(C\backslash\{p_1\}\cup\{p_2\}), X(C))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C\backslash\{p_\mathit{proj}\} \cup \{p_\mathit{meas}\}))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C\backslash\{p_\mathit{meas}\} \cup \{p_\mathit{proj}\}))\\
+            &\wedge [\overline{\{RMoveFromTo, Swap\}}]X(C)\\
+            &\wedge [RMoveFrom(r_3,p_\mathit{meas}, p_\mathit{out})](p_\mathit{meas} \notin C)
+        \end{align*}
+    \item $\forall n:\mathbb{N},q:Q.[true^{*}\cdot ProvideLotInfo(n,q,true)\cdot \overline{Calibrated}\cdot RMoveFromTo(r_2, p_\mathit{in}, p_\mathit{meas})]false$
+    \item \begin{align*}
+    		&\nu X(C : Set(P) = \{p_\mathit{meas},p_\mathit{proj}\}).\\
+            & \forall r:R, p_1, p_2 : P . [RMoveFromTo(r, p_1, p_2)](if(p_1 \in C, X(C\backslash\{p_1\}\cup\{p_2\}), X(C))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C))\\
+            &\wedge ((p_\mathit{meas} \notin C \wedge p_\mathit{proj} \in C) \implies [Swap]X(C\backslash\{p_\mathit{proj}\} \cup \{p_\mathit{meas}\}))\\
+            &\wedge ((p_\mathit{meas} \in C \wedge p_\mathit{proj} \notin C) \implies [Swap]X(C\backslash\{p_\mathit{meas}\} \cup \{p_\mathit{proj}\}))\\
+            &\wedge [\overline{\{RMoveFromTo, Swap\}}]X(C)\\
+            &\wedge [Calibrate](p_\mathit{meas} \in C \wedge p_\mathit{proj} \in C)
+        \end{align*}
+    \item \begin{align*}
+    	&\nu X(mp:\mathbb{B} = false, pp:\mathbb{B}=false).\\
+    	&[Projected]X(mp, true)\\
+    	&\wedge [Swapped]X(pp, mp)\\
+    	&\wedge [RMoveFromTo(r_2, p_\mathit{meas}, p_\mathit{out})](mp \wedge X(false, pp))\\
+    	&\wedge [\overline{\{Projected, Swapped, RMoveFromTo(r_2, p_\mathit{meas}, p_\mathit{out})\}}]X(mp, pp)
+    \end{align*}
 \end{enumerate}
