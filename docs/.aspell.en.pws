@@ -1,6 +1,21 @@
-personal_ws-1.1 en 5
+personal_ws-1.1 en 21
 ASML
+boolean
 Brouwers
-Proj
+chuckIn
+chuckOut
+MeasureWafer
+nano
+nonclosing
+pre
+PreMeasured
+PreMeasureWafer
+proj
+ProjectWafer
+ProvideLotInfo
+RIdle
+RMoveFromTo
 Sjef
+SwapIdle
+Veldhoven
 Verhaegh
