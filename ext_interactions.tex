@@ -4,7 +4,7 @@ External actions specifically describe the communication between external parts 
 In this chapter the interactions of the controller, which consists of $6$ sub controllers, with the external environment will be described.
 In order to properly define the external interactions we specify a few variables:
 \\Let $P$ be the set of positions at which chucks are located; $P = \{\mathit{p_\mathit{tray}}, p_\mathit{in}, p_\mathit{out}, p_\mathit{meas}, p_\mathit{proj}, p_{\mathit{empty}_1}, p_{\mathit{empty}_2}$.
-\\Let $R$ be the set of robots; $R = \{R_1,R_2,R_3\}$.
+\\Let $R$ be the set of robots; $R = \{r_1,r_2,r_3\}$.
 
 \subsection{Observational variables}
 In order to better specify the external interactions a number of observational variables are declared:
@@ -19,20 +19,20 @@ Then $c(\mathit{pos})$ denotes the type of wafer that is on the chuck at positio
 For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted.
 Only the following argument combinations are accepted:
 \begin{align*}
-\{ & (R_1, p_\mathit{tray}, p_\mathit{in}),&\\
-& (R_1, p_\mathit{out}, p_\mathit{tray}),&\\
-&(R_2, p_\mathit{in}, p_\mathit{meas}),&\\
-&(R_2, p_\mathit{meas}, p_{\mathit{empty}_1}),&\\
-&(R_2, p_{\mathit{empty}_1}, p_\mathit{meas}),&\\
-&(R_3, p_{\mathit{empty}_2}, p_\mathit{meas}),&\\
-&(R_3, p_\mathit{meas}, p_{\mathit{empty}_2}),&\\
-&(R_3, p_\mathit{meas}, p_\mathit{out})\}
+\{ & (r_1, p_\mathit{tray}, p_\mathit{in}),&\\
+& (r_1, p_\mathit{out}, p_\mathit{tray}),&\\
+&(r_2, p_\mathit{in}, p_\mathit{meas}),&\\
+&(r_2, p_\mathit{meas}, p_{\mathit{empty}_1}),&\\
+&(r_2, p_{\mathit{empty}_1}, p_\mathit{meas}),&\\
+&(r_3, p_{\mathit{empty}_2}, p_\mathit{meas}),&\\
+&(r_3, p_\mathit{meas}, p_{\mathit{empty}_2}),&\\
+&(r_3, p_\mathit{meas}, p_\mathit{out})\}
 \end{align*}
 $\mathit{RMoveFromTo}$ has the following effect on the observational variables: 
 \begin{align*}
 &\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&\mathit{RMoveFromTo}(R_1, p_\mathit{tray}, p_\mathit{in})&\rightarrow&c(p_\mathit{in}) = \mathit{nonclosing}&&\\
-&\mathit{RMoveFromTo}(R_1, p_\mathit{out}, p_\mathit{tray})&\rightarrow&c(p_\mathit{out}) = \mathit{none}&&\\
+&\mathit{RMoveFromTo}(r_1, p_\mathit{tray}, p_\mathit{in})&\rightarrow&c(p_\mathit{in}) = \mathit{nonclosing}&&\\
+&\mathit{RMoveFromTo}(r_1, p_\mathit{out}, p_\mathit{tray})&\rightarrow&c(p_\mathit{out}) = \mathit{none}&&\\
 &\mathit{RMoveFromTo}(r, p_1, p_2), s = c(p_1)&\rightarrow&c(p_2) = s&\text{for any }r \in R\text{ and }p_1,p_2 \in P&\\
 &&&c(p_1)=none&&
 \end{align*}
