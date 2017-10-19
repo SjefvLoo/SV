@@ -55,7 +55,23 @@ $\mathit{Swap}$ has the following effect on the observational variables:
 \end{itemize}
 
 \subsection{Machine to Lot Controller}
-\todo{copy from gdocs}
+\begin{itemize}
+    \item $\mathit{ProvideLotInfo}(n, r, b)$\\
+    Provide the lot controller with info about the current lot in the \tray.
+    When $n$ equalts the amount of wafers in the lot, $r$ indicates the recipe (i.e. \recipeOne, \recipeTwo or \recipeThree) and $b$ indicates the need for calibration.
+    When $b$ is $\mathbf{True}$, the system needs to be calibrated before the lot is processed.
+    When $b$ is $\mathbf{False}$ no calibration is needed.
+    \item $\mathit{RIdle(r)}$\\
+    Function that indicates that robot $r \in R$ is finished with the requested action and is now idle.
+    \item $SwapIdle$\\
+    \robotSwap finished the requested action and is now idle.
+    \item $\mathit{PreMeasured}$\\
+    Pre-measuring has finished.
+    \item $\mathit{Projected}$\\
+    Projection has finished.
+    \item $\mathit{Calibrated}$\\
+    Calibrated has finished.
+\end{itemize}
 
 \subsection{Lot Controller to User}
 \begin{itemize}
