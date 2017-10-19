@@ -1,18 +1,22 @@
 \section{External Interactions}
 Interactions describe in what manner the system behavior is controlled by the controller.
 External actions specifically describe the communication between external parts of the system and the controller.
-In this chapter the interactions of the controller, which consists of $6$ sub controllers, with the external environment will be described.
-In order to properly define the external interactions we specify a few variables:
+In this section the interactions of the controller, which consists of $6$ sub controllers, with the external environment will be described.
+In order to properly define the external interactions, some variables will be introduced.
 
-Let $P = \left\{p_\mathit{in}, p_\mathit{out}, p_\mathit{meas}, p_\mathit{proj}, p_\mathit{empty1}, p_\mathit{empty2}\right\}$ be the set of positions at which chucks are located.
+Let $P = \left\{p_\mathit{in}, p_\mathit{out}, p_\mathit{meas}, p_\mathit{proj}, p_\mathit{empty1}, p_\mathit{empty2}\right\}$ be the set of positions (i.e. chucks) at which wafers can be placed.
 Additionally, let $\mathit{p_\mathit{tray}}$ be the location of the tray.
 Furthermore, let $R = \{r_1,r_2,r_3\}$ be the set of robots.
 
 \subsection{Observational variables}
 In order to better specify the external interactions a number of observational variables are declared:
 \begin{itemize}
-    \item Let $c : P \mapsto \left\{\mathit{none}, \mathit{closing}, \mathit{nonclosing}\right\}$ be a function.
+    \item Let $c : P \mapsto \left\{\mathit{none}, \mathit{closing}, \mathit{nonclosing}, \mathit{premeasured}, \mathit{measured}, \mathit{projected}\right\}$ be a function.
         Then $c(p)$ denotes the type of wafer that is on the chuck at position $p$, where $p \in P$.
+        In the initial situation both $c\left(p_\mathit{meas}\right) = \mathit{closing}$ and $c\left(p_\mathit{proj}\right) = \mathit{closing}$.
+        For all other positions in the initial situation the output of $c$ is $\mathit{none}$.
+    \item Let $\mathit{lock} : P \mapsto \left\{\text{False}, \text{True}\right\}$ be a function that denotes whether or not the chuck at a position is ready to be used.
+        For all $p \in P$, the initial value of $\mathit{lock}(p) = \text{False}$.
 \end{itemize}
 
 \subsection{Lot Controller to Machine}
@@ -34,28 +38,36 @@ In order to better specify the external interactions a number of observational v
         Some observational variables change for each valid $\mathit{RMoveFromTo}$:
         \begin{itemize}
             \item If $\mathit{RMoveFromTo}\left(r_1, p_\mathit{tray}, p_\mathit{in}\right)$, then $c\left(p_\mathit{in}\right) = \mathit{nonclosing}$.
+                Also, $\mathit{lock}(p_\mathit{in})$ changes to $\text{True}$.
             \item If $\mathit{RMoveFromTo}\left(r_1, p_\mathit{out}, p_\mathit{tray}\right)$, then $c\left(p_\mathit{out}\right) = \mathit{none}$.
+                Also, $\mathit{lock}(p_\mathit{out})$ changes to $\text{True}$.
             \item Let $r \in R$, $p_1, p_2 \in P$ and let $w = c\left(p_1\right)$ be the type of wafer currently on chuck $p_1$.
                 For every valid move $\mathit{RMoveFromTo}\left(r, p_1, p_2\right)$ (i.e. $\left(r, p_1, p_2\right) \in M$), $c\left(p_2\right) = s$ and $c\left(p_1\right) = none$.
+                Furthermore, both  $\mathit{lock}(p_\mathit{p_1})$ and  $\mathit{lock}(p_\mathit{p_2})$ change to $\text{True}$.
         \end{itemize}
 
     \item $\mathit{Calibrate}$ \\
     Request calibration to be performed.
+    This changes $\mathit{lock}(p_\mathit{meas})$ and $\mathit{lock}(p_\mathit{proj})$ both to $\text{True}$.
 
     \item $\mathit{PreMeasureWafer}$ \\
     Request pre-measurement to be performed on the wafer at \chuckIn.
+    This changes $\mathit{lock}(p_\mathit{in})$ to $\text{True}$.
 
     \item $\mathit{MeasureWafer}$ \\
     Request measurement to be performed on the wafer at \chuckMeas.
+    This changes $\mathit{lock}(p_\mathit{meas})$ to $\text{True}$.
 
     \item $\mathit{ProjectWafer}$ \\
     Request an image projection of the wafer at \chuckProj.
+    This changes $\mathit{lock}(p_\mathit{proj})$ to $\text{True}$.
 
     \item $\mathit{Swap}$ \\
     Request a swap of the chucks present on the \chuckMeas and \chuckProj.
     Some observational variables change for a $\mathit{Swap}$.
     Let $m = c\left(p_\mathit{meas}\right)$ and $p = c\left(p_\mathit{proj}\right)$ be the type of wafer currently on chuck $p_\mathit{meas}$ and $p_\mathit{proj}$ respectively.
     If $\mathit{Swap}$, then $c\left(p_\mathit{meas}\right) = p$ and $c\left(p_\mathit{proj}\right) = m$.
+    Furthermore, both $\mathit{lock}(p_\mathit{meas})$ and $\mathit{lock}(p_\mathit{proj})$ change to $\text{True}$.
 \end{itemize}
 
 \subsection{Machine to Lot Controller}
@@ -63,23 +75,33 @@ In order to better specify the external interactions a number of observational v
     \item $\mathit{ProvideLotInfo}(n, r, b)$ \\
     Provide the lot controller with info about the current lot in the \tray.
     When $n$ equals the amount of wafers in the lot, $r$ indicates the recipe (i.e. \recipeOne, \recipeTwo or \recipeThree) and $b$ indicates the need for calibration.
-    When $b$ is $\mathbf{True}$, the system needs to be calibrated before the lot is processed.
-    When $b$ is $\mathbf{False}$ no calibration is needed.
+    When $b$ is $\text{True}$, the system needs to be calibrated before the lot is processed.
+    When $b$ is $\text{False}$ no calibration is needed.
+    This does not change any observational variables.
 
-    \item $\mathit{RIdle(r)}$ \\
-    Function that indicates that robot $r \in R$ is finished with the requested action and is now idle.
-
-    \item $SwapIdle$ \\
-    \robotSwap finished the requested action and is now idle.
+    \item $\mathit{RIdle(r, p_1, p_2)}$ \\
+    Indicates that robot $r \in R$ has finished moving a wafer from $p_1 \in P$ to $p_2 \in P$.
+    This changes $\mathit{lock}(p_1)$ to $\text{False}$ if $p_1 \in P$ and changes $\mathit{lock}(p_2)$ to $\text{False}$ if $p_2 \in P$.
+    
+    \item $\mathit{SwapIdle}$ \\
+    Indicates that $\mathit{Swap}$ has finished.
+    This changes $\mathit{lock}(p_\mathit{meas})$ and $\mathit{lock}(p_\mathit{proj})$ both to $\text{False}$.
 
     \item $\mathit{PreMeasured}$ \\
-    Pre-measuring has finished.
+    Indicates that $\mathit{PreMeasureWafer}$ has finished.
+    This changes $\mathit{lock}(p_\mathit{in})$ to $\text{False}$.
+
+    \item $\mathit{Measured}$ \\
+    Indicates that $\mathit{MeasureWafer}$ has finished.
+    This changes $\mathit{lock}(p_\mathit{meas})$ to $\text{False}$.
 
     \item $\mathit{Projected}$ \\
-    Projection has finished.
+    Indicates that $\mathit{ProjectWafer}$ has finished.
+    This changes $\mathit{lock}(p_\mathit{proj})$ to $\text{False}$.
 
     \item $\mathit{Calibrated}$ \\
-    Calibrated has finished.
+    Indicates that $\mathit{Calibrate}$ has finished.
+    This changes $\mathit{lock}(p_\mathit{meas})$ and $\mathit{lock}(p_\mathit{proj})$ both to $\text{False}$.
 
 \end{itemize}
 
@@ -87,6 +109,7 @@ In order to better specify the external interactions a number of observational v
 \begin{itemize}
     \item $\mathit{Finished}$ \\
     The system is finished with the current Tray, and indicates this to the operator.
+    This does not change any observational variables.
 \end{itemize}
 
 \subsection{User to Lot Controller}
