@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+#
+# Spellcheck the documentation.
+#
+cat "$@" | aspell --conf=./.aspell.conf list | sort | uniq --count
