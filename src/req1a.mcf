@@ -1,4 +1,0 @@
-nu X(i:int = 0).[RMoveFromTo(r1,ptray,pin)]X(i+1) &&
-[RMoveFromTo(r3, pout, ptray)]X(i-1) &&
-[!{Finished, RMoveFromTo(r1,ptray,pin),RMoveFromTo(r3, pout, ptray)}]X(i) &&
-[Finished](val(i==0))
