@@ -13,7 +13,7 @@ In order to better specify the external interactions a number of observational v
 \end{itemize}
 \subsection{Lot Controller to Machine}
 \begin{itemize}
-\item $RMoveFromTo(r, p_1, p_2)$
+\item $RMoveFromTo(r, p_1, p-2)$
 \\Request robot $r$ to move the wafer that is located at position $p_1$ to position $p_2$. For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted. Accepted argument combinations: 
 \begin{align*}
 \{ & (R_1, Tray, chuckIn),&\\
@@ -66,10 +66,11 @@ $lock(Meas) = true$ and $lock(Proj) = true$.\\
 \begin{itemize}
 \item $ProvideLotInfo(n, recipe, calibrate)$
 \\Provide the lot controller with info about the current lot in the tray. Where $n$ equals the number of wafers in the lot, $recipe$ indicated the recipe for the lot (can have value $A, B$ or $AB$). $calibrate$ is a boolean, when $true$ the system needs to calibrate before starting on this lot.
-\item $Ridle(r, p_1, p_2)$
-\\Indicates that robot $r$ is idle. $r \in R$. $p_1$ and $p_2$ indicate the action robot $r$ just performed.\\
+\item $Ridle(r)$
+\\Indicates that robot $r$ is idle. $r \in R$.\\
 Effect on $Proj(pos)$:\\
-$lock(p_1) = false$ and $lock(p_1) = false$.
+Let $from$ and $to$ be the variables used in the last $RMoveFromTo$ occurance with robot $r$.\\
+$lock(from) = false$ and $lock(to) = false$.
 \item $SwapIdle$
 \\Indicates that $Swap$ action has finished.
 \\Effect on $lock(pos)$:\\
