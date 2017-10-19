@@ -3,81 +3,91 @@ Interactions describe in what manner the system behavior is controlled by the co
 External actions specifically describe the communication between external parts of the system and the controller.
 In this chapter the interactions of the controller, which consists of $6$ sub controllers, with the external environment will be described.
 In order to properly define the external interactions we specify a few variables:
-\\Let $P$ be the set of positions at which chucks are located; $P = \{\mathit{p_\mathit{tray}}, p_\mathit{in}, p_\mathit{out}, p_\mathit{meas}, p_\mathit{proj}, p_{\mathit{empty}_1}, p_{\mathit{empty}_2}$.
-\\Let $R$ be the set of robots; $R = \{r_1,r_2,r_3\}$.
+
+Let $P = \left\{p_\mathit{in}, p_\mathit{out}, p_\mathit{meas}, p_\mathit{proj}, p_\mathit{empty1}, p_\mathit{empty2}\right\}$ be the set of positions at which chucks are located.
+Additionally, let $\mathit{p_\mathit{tray}}$ be the location of the tray.
+Furthermore, let $R = \{r_1,r_2,r_3\}$ be the set of robots.
 
 \subsection{Observational variables}
 In order to better specify the external interactions a number of observational variables are declared:
 \begin{itemize}
-\item Let $c : P \mapsto \left\{\mathit{none}, \mathit{closing}, \mathit{nonclosing}\right\}$ be a function.
-Then $c(\mathit{pos})$ denotes the type of wafer that is on the chuck at position $\mathit{pos}$, where $\mathit{pos} \in P$.
+    \item Let $c : P \mapsto \left\{\mathit{none}, \mathit{closing}, \mathit{nonclosing}\right\}$ be a function.
+        Then $c(p)$ denotes the type of wafer that is on the chuck at position $p$, where $p \in P$.
 \end{itemize}
+
 \subsection{Lot Controller to Machine}
 \begin{itemize}
-\item $\mathit{RMoveFromTo}(r, p_1, p_2)$
-\\Request robot $r$ to move the wafer that is located at position $p_1$ to position $p_2$ where $r \in R$ and $p_1, p_2 \in P$.
-For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted.
-Only the following argument combinations are accepted:
-\begin{align*}
-\{ & (r_1, p_\mathit{tray}, p_\mathit{in}),&\\
-& (r_1, p_\mathit{out}, p_\mathit{tray}),&\\
-&(r_2, p_\mathit{in}, p_\mathit{meas}),&\\
-&(r_2, p_\mathit{meas}, p_{\mathit{empty}_1}),&\\
-&(r_2, p_{\mathit{empty}_1}, p_\mathit{meas}),&\\
-&(r_3, p_{\mathit{empty}_2}, p_\mathit{meas}),&\\
-&(r_3, p_\mathit{meas}, p_{\mathit{empty}_2}),&\\
-&(r_3, p_\mathit{meas}, p_\mathit{out})\}
-\end{align*}
-$\mathit{RMoveFromTo}$ has the following effect on the observational variables: 
-\begin{align*}
-&\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&\mathit{RMoveFromTo}(r_1, p_\mathit{tray}, p_\mathit{in})&\rightarrow&c(p_\mathit{in}) = \mathit{nonclosing}&&\\
-&\mathit{RMoveFromTo}(r_1, p_\mathit{out}, p_\mathit{tray})&\rightarrow&c(p_\mathit{out}) = \mathit{none}&&\\
-&\mathit{RMoveFromTo}(r, p_1, p_2), s = c(p_1)&\rightarrow&c(p_2) = s&\text{for any }r \in R\text{ and }p_1,p_2 \in P&\\
-&&&c(p_1)=none&&
-\end{align*}
-\item $\mathit{Calibrate}$
-\\Request calibration to be performed.
-\item $\mathit{PreMeasureWafer}$
-\\Request pre-measurement to be performed on the wafer at \chuckIn.
-\item $\mathit{MeasureWafer}$
-\\Request measurement to be performed on the wafer at \chuckMeas.
-\item $\mathit{ProjectWafer}$
-\\Request an image projection of the wafer at \chuckProj.
-\item $\mathit{Swap}$
-\\Request a swap of the chucks present on the \chuckMeas and \chuckProj.
-$\mathit{Swap}$ has the following effect on the observational variables:
-\begin{align*}
-&\textbf{Pre}&&\textbf{Post}&\textbf{Conditions}&\\
-&Swap, m = c(p_\mathit{meas}), p = c(p_\mathit{proj})&\rightarrow&c(p_\mathit{proj}) = m&&\\
-&&\rightarrow&c(p_\mathit{meas}) = p&&
-\end{align*}
+    \item $\mathit{RMoveFromTo}(r, p_1, p_2)$ \\
+        Request robot $r$ to move the wafer that is located at position $p_1$ to position $p_2$ where $r \in R$ and $p_1, p_2 \in P$.
+        For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted.
+        Only the following argument combinations are accepted:
+        \begin{align*}
+            M = \{ & \left(r_1, p_\mathit{tray},   p_\mathit{in}     \right), \\
+                   & \left(r_1, p_\mathit{out},    p_\mathit{tray}   \right), \\
+                   & \left(r_2, p_\mathit{in},     p_\mathit{meas}   \right), \\
+                   & \left(r_2, p_\mathit{meas},   p_\mathit{empty1} \right), \\
+                   & \left(r_2, p_\mathit{empty1}, p_\mathit{meas}   \right), \\
+                   & \left(r_3, p_\mathit{empty2}, p_\mathit{meas}   \right), \\
+                   & \left(r_3, p_\mathit{meas},   p_\mathit{empty2} \right), \\
+                   & \left(r_3, p_\mathit{meas},   p_\mathit{out}    \right)\} \\
+        \end{align*}
+        Some observational variables change for each valid $\mathit{RMoveFromTo}$:
+        \begin{itemize}
+            \item If $\mathit{RMoveFromTo}\left(r_1, p_\mathit{tray}, p_\mathit{in}\right)$, then $c\left(p_\mathit{in}\right) = \mathit{nonclosing}$.
+            \item If $\mathit{RMoveFromTo}\left(r_1, p_\mathit{out}, p_\mathit{tray}\right)$, then $c\left(p_\mathit{out}\right) = \mathit{none}$.
+            \item Let $r \in R$, $p_1, p_2 \in P$ and let $w = c\left(p_1\right)$ be the type of wafer currently on chuck $p_1$.
+                For every valid move $\mathit{RMoveFromTo}\left(r, p_1, p_2\right)$ (i.e. $\left(r, p_1, p_2\right) \in M$), $c\left(p_2\right) = s$ and $c\left(p_1\right) = none$.
+        \end{itemize}
+
+    \item $\mathit{Calibrate}$ \\
+    Request calibration to be performed.
+
+    \item $\mathit{PreMeasureWafer}$ \\
+    Request pre-measurement to be performed on the wafer at \chuckIn.
+
+    \item $\mathit{MeasureWafer}$ \\
+    Request measurement to be performed on the wafer at \chuckMeas.
+
+    \item $\mathit{ProjectWafer}$ \\
+    Request an image projection of the wafer at \chuckProj.
+
+    \item $\mathit{Swap}$ \\
+    Request a swap of the chucks present on the \chuckMeas and \chuckProj.
+    Some observational variables change for a $\mathit{Swap}$.
+    Let $m = c\left(p_\mathit{meas}\right)$ and $p = c\left(p_\mathit{proj}\right)$ be the type of wafer currently on chuck $p_\mathit{meas}$ and $p_\mathit{proj}$ respectively.
+    If $\mathit{Swap}$, then $c\left(p_\mathit{meas}\right) = p$ and $c\left(p_\mathit{proj}\right) = m$.
 \end{itemize}
 
 \subsection{Machine to Lot Controller}
 \begin{itemize}
-    \item $\mathit{ProvideLotInfo}(n, r, b)$\\
+    \item $\mathit{ProvideLotInfo}(n, r, b)$ \\
     Provide the lot controller with info about the current lot in the \tray.
-    When $n$ equalts the amount of wafers in the lot, $r$ indicates the recipe (i.e. \recipeOne, \recipeTwo or \recipeThree) and $b$ indicates the need for calibration.
+    When $n$ equals the amount of wafers in the lot, $r$ indicates the recipe (i.e. \recipeOne, \recipeTwo or \recipeThree) and $b$ indicates the need for calibration.
     When $b$ is $\mathbf{True}$, the system needs to be calibrated before the lot is processed.
     When $b$ is $\mathbf{False}$ no calibration is needed.
-    \item $\mathit{RIdle(r)}$\\
+
+    \item $\mathit{RIdle(r)}$ \\
     Function that indicates that robot $r \in R$ is finished with the requested action and is now idle.
-    \item $SwapIdle$\\
+
+    \item $SwapIdle$ \\
     \robotSwap finished the requested action and is now idle.
-    \item $\mathit{PreMeasured}$\\
+
+    \item $\mathit{PreMeasured}$ \\
     Pre-measuring has finished.
-    \item $\mathit{Projected}$\\
+
+    \item $\mathit{Projected}$ \\
     Projection has finished.
-    \item $\mathit{Calibrated}$\\
+
+    \item $\mathit{Calibrated}$ \\
     Calibrated has finished.
+
 \end{itemize}
 
 \subsection{Lot Controller to User}
 \begin{itemize}
-    \item $\mathit{Finished}$\\
+    \item $\mathit{Finished}$ \\
     The system is finished with the current Tray, and indicates this to the operator.
 \end{itemize}
 
 \subsection{User to Lot Controller}
-\todo{copy from gdocs}
+\todo{delete this subsection?!}
