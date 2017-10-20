@@ -1,3 +1,8 @@
+# mCRL2 files:
+*.lps
+*.lts
+*.pbes
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
