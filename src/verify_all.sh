@@ -2,7 +2,7 @@
 if [ -z "${MCRL2_NAME}" ]; then
     . ./.mcrl2rc
 fi
-mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps"
+mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps" || exit 1
 for file in requirements/*.mcf; do
     echo "${file}"
     lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
