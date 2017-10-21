@@ -1,0 +1,111 @@
+sort
+    Position = struct Tray | ChuckIn | ChuckOut | ChuckMeas | ChuckProj
+        | ChuckEmptyOne | ChuckEmptyTwo;
+    Recipe = struct RecipeOne | RecipeTwo | RecipeThree;
+    Robot = struct RobotOne | RobotTwo | RobotThree;
+
+
+act
+    % Lot Controller to Machine
+    RMoveFromTo: Robot # Position # Position;
+    Calibrate;
+    PreMeasureWafer;
+    MeasureWafer;
+    ProjectWafer;
+    Swap;
+
+    % Machine to Lot Controller
+    ProvideLotInfo: Nat # Recipe # Bool;
+    RIdle: Robot # Position # Position;
+    SwapIdle;
+    PreMeasured;
+    Measured;
+    Projected;
+    Calibrated;
+
+    % Lot Controller to User
+    Finished;
+
+    % Communication between MainComponent and IOComponent
+    AvailableWafers: Nat;
+        rAvailableWafers: Nat;
+        sAvailableWafers: Nat;
+    CompletedLot;
+        rCompletedLot;
+        sCompletedLot;
+
+    % Communication between IOComponent and ProjectComponent
+    WaferReadyAtChuckIn;
+        rWaferReadyAtChuckIn;
+        sWaferReadyAtChuckIn;
+    WaferReadyAtChuckOut;
+        rWaferReadyAtChuckOut;
+        sWaferReadyAtChuckOut;
+
+    % Communication between MainComponent and ProjectComponent
+    ChangeConfig: Recipe # Bool;
+        rChangeConfig: Recipe # Bool;
+        sChangeConfig: Recipe # Bool;
+    ChangedConfig;
+        rChangedConfig;
+        sChangedConfig;
+    
+    % Communication between MainComponent and TrayInput
+    % ProvideLotInfo is from Machine to LotController
+        rProvideLotInfo: Nat # Recipe # Bool;
+        sProvideLotInfo: Nat # Recipe # Bool;
+
+proc
+    MainComponent = Finished;  % TODO: implement
+    
+    IOComponent = Finished;  % TODO: implement
+    
+    ProjectComponent = Finished;  % TODO: implement
+    
+    TrayInput = sProvideLotInfo(5, RecipeOne, false)
+        .sProvideLotInfo(7, RecipeTwo, true)
+        .sProvideLotInfo(11, RecipeThree, false)
+        ;
+
+init
+    hide({
+        AvailableWafers,
+        CompletedLot,
+        WaferReadyAtChuckIn,
+        WaferReadyAtChuckOut,
+        ChangeConfig,
+        Calibrated
+    },
+    allow({
+        RMoveFromTo,
+        Calibrate,
+        PreMeasureWafer,
+        MeasureWafer,
+        ProjectWafer,
+        Swap,
+        ProvideLotInfo,
+        RIdle,
+        SwapIdle,
+        PreMeasured,
+        Measured,
+        Projected,
+        Calibrated,
+        Finished,
+        AvailableWafers,
+        CompletedLot,
+        WaferReadyAtChuckIn,
+        WaferReadyAtChuckOut,
+        ChangeConfig,
+        Calibrated
+    },
+    comm({
+        rAvailableWafers      | sAvailableWafers      -> AvailableWafers,
+        rCompletedLot         | sCompletedLot         -> CompletedLot,
+        rWaferReadyAtChuckIn  | sWaferReadyAtChuckIn  -> WaferReadyAtChuckIn,
+        rWaferReadyAtChuckOut | sWaferReadyAtChuckOut -> WaferReadyAtChuckOut,
+        rChangeConfig         | sChangeConfig         -> ChangeConfig,
+        rChangedConfig        | sChangedConfig        -> ChangedConfig,
+        rProvideLotInfo       | sProvideLotInfo       -> ProvideLotInfo
+    },
+    MainComponent || IOComponent || ProjectComponent || TrayInput
+)));
