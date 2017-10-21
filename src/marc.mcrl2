@@ -233,6 +233,7 @@ init
         Projected,
         Calibrated,
         Finished,
+        TrayDone,
         AvailableWafers,
         CompletedLot,
         WaferTakenAtChuckIn,
@@ -240,7 +241,11 @@ init
         WaferTakenAtChuckOut,
         WaferReadyAtChuckOut,
         ChangeConfig,
-        TrayDone
+        ChangedConfig,
+        ProvideClosingWafer,
+        ProvidedClosingWafer,
+        StoreClosingWafer,
+        StoredClosingWafer
     },
     comm({
         sTrayDone             | rTrayDone             -> TrayDone,
