@@ -3,7 +3,7 @@ sort
         | ChuckEmptyOne | ChuckEmptyTwo;
     Recipe = struct RecipeOne | RecipeTwo | RecipeThree;
     Robot = struct RobotOne | RobotTwo | RobotThree;
-
+	ChuckStatus = struct Empty | Wafer | Processed;
 
 act
 	dddd;
@@ -73,14 +73,16 @@ act
 proc
     MainComponent(wafers:Nat, currentRecipe:Recipe, calibrateNow: Bool) = 
 		((wafers==0 && !calibrateNow) -> (sum n:Nat. sum r:Recipe. sum c:Bool. (rProvideLotInfo(n, r, c) . MainComponent(n, r, c)))) + 
-		((wafers>0 && !calibrateNow) -> sAvailableWafers(wafers) . MainComponent(wafers, currentRecipe, calibrateNow))
-		
-		;
+		((wafers>0 && !calibrateNow) -> sAvailableWafers(wafers) . MainComponent(wafers, currentRecipe, calibrateNow));
     
-    IOComponent(idle: Bool, wafers: Nat) = 
-		((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n)) + 
-		((wafers == 0) -> sCompletedLot . IOComponent(true, wafers)) +
-		(!idle && wafers > 0) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . IOComponent(idle, Int2Nat(wafers - 1));
+    IOComponent(idle: Bool, wafers: Nat, cin:ChuckStatus, cout:ChuckStatus) = 
+		((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n, cin, cout)) + 
+		((wafers == 0) -> sCompletedLot . IOComponent(true, wafers, cin, cout)) +
+		(!idle && wafers > 0) -> (
+			((cin == Empty) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . rRIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, wafers, Wafer, cout)) +
+			((cin == Wafer) -> sPreMeasureWafer . rPreMeasured . IOComponent(idle, wafers, Processed, cout))
+			%Update instatus if Processed
+		);
 		
 	%ProjectComponentStub = Finished;
     
@@ -155,7 +157,7 @@ init
 		sProjected            | rProjected            -> Projected,
 		sCalibrated           | rCalibrated           -> Calibrated
     },
-    MainComponent(0,RecipeOne,false) || IOComponent(true, 0) || ProjectComponent || TrayInput
+    MainComponent(0,RecipeOne,false) || IOComponent(true, 0, Empty, Empty) || ProjectComponent || TrayInput
 	%Machine components:
 	|| MachineRobot1 || MachineCalibrate || MachineSwap || MachinePreMeasure || MachineMeasure || MachineProject
 	 
