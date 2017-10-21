@@ -194,7 +194,7 @@ proc
                 .RIdle(RobotThree, ChuckMeas, ChuckOut)
                 .sWaferReadyAtChuckOut
                 .rWaferTakenAtChuckOut
-				.ProjectComponent(config, chuckAAtProj, measEmpty,calibrate)
+                .ProjectComponent(config, chuckAAtProj, measEmpty,calibrate)
             )
         )
         ;
@@ -202,7 +202,7 @@ proc
 
     TrayInput = sProvideLotInfo(2, RecipeOne, false)
         .sProvideLotInfo(3, RecipeTwo, false)
-%        .sProvideLotInfo(11, RecipeThree, false)
+        .sProvideLotInfo(11, RecipeThree, false)
         .sTrayDone
         ;
 
