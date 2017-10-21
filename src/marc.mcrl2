@@ -6,37 +6,22 @@ sort
     ChuckStatus = struct Empty | Wafer | Processed | Notifying;
 
 act
-    dddd;
     % Lot Controller to Machine
     RMoveFromTo: Robot # Position # Position;
-        sRMoveFromTo: Robot # Position # Position;
-        rRMoveFromTo: Robot # Position # Position;
     Calibrate;
-        sCalibrate, rCalibrate;
     PreMeasureWafer;
-        sPreMeasureWafer, rPreMeasureWafer;
     MeasureWafer;
-        sMeasureWafer, rMeasureWafer;
     ProjectWafer;
-        sProjectWafer, rProjectWafer;
     Swap;
-        sSwap, rSwap;
 
     % Machine to Lot Controller
     ProvideLotInfo: Nat # Recipe # Bool;
     RIdle: Robot # Position # Position;
-        sRIdle: Robot # Position # Position;
-        rRIdle: Robot # Position # Position;
     SwapIdle;
-        sSwapIdle, rSwapIdle;
     PreMeasured;
-        rPreMeasured, sPreMeasured;
     Measured;
-        sMeasured, rMeasured;
     Projected;
-        sProjected, rProjected;
     Calibrated;
-        sCalibrated, rCalibrated;
 
     % Lot Controller to User
     Finished;
@@ -71,6 +56,20 @@ act
         rChangedConfig;
         sChangedConfig;
 
+    % Communication between ProjectComponent and EmptyComponent
+    ProvideClosingWafer;
+        rProvideClosingWafer;
+        sProvideClosingWafer;
+    ProvidedClosingWafer;
+        rProvidedClosingWafer;
+        sProvidedClosingWafer;
+    StoreClosingWafer;
+        rStoreClosingWafer;
+        sStoreClosingWafer;
+    StoredClosingWafer;
+        rStoredClosingWafer;
+        sStoredClosingWafer;
+
     % Communication between MainComponent and TrayInput
     % ProvideLotInfo is from Machine to LotController
         rProvideLotInfo: Nat # Recipe # Bool;
@@ -94,37 +93,117 @@ proc
         ((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n, n, cin, cout)) +
         ((!idle && wplace == 0) -> sCompletedLot . IOComponent(true, wtake, wplace, cin, cout)) +
         (!idle) -> (
-            ((cin == Empty && wtake > 0) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . rRIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, Int2Nat(wtake -1), wplace, Wafer, cout)) +
-            ((cin == Wafer) -> sPreMeasureWafer . rPreMeasured . IOComponent(idle, wtake, wplace, Processed, cout)) +
+            ((cin == Empty && wtake > 0) -> RMoveFromTo(RobotOne, Tray, ChuckIn) . RIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, Int2Nat(wtake -1), wplace, Wafer, cout)) +
+            ((cin == Wafer) -> PreMeasureWafer . PreMeasured . IOComponent(idle, wtake, wplace, Processed, cout)) +
             ((cin == Processed) -> sWaferReadyAtChuckIn . IOComponent(idle, wtake, wplace, Notifying, cout)) +
             ((cin == Notifying) -> rWaferTakenAtChuckIn . IOComponent(idle, wtake, wplace, Empty, cout)) +
 
-            ((cout == Wafer && wplace > 0) -> sRMoveFromTo(RobotOne, ChuckOut, Tray) . rRIdle(RobotOne, ChuckOut, Tray) . IOComponent(idle, wtake, wplace, cin, Notifying)) +
+            ((cout == Wafer && wplace > 0) -> RMoveFromTo(RobotOne, ChuckOut, Tray) . RIdle(RobotOne, ChuckOut, Tray) . IOComponent(idle, wtake, wplace, cin, Notifying)) +
             ((cout == Empty) -> rWaferReadyAtChuckOut . IOComponent(idle, wtake, wplace, cin, Wafer)) +
             ((cout == Notifying) -> sWaferTakenAtChuckOut . IOComponent(idle, wtake, Int2Nat(wplace - 1), cin, Empty))
         )
         ;
 
-    %ProjectComponentStub(b:Bool) =
-    %    (!b) -> (rWaferReadyAtChuckIn . sWaferTakenAtChuckIn . ProjectComponentStub(true)) <> (sWaferReadyAtChuckOut . rWaferTakenAtChuckOut . ProjectComponentStub(false));
-
-    ProjectComponent = Finished;  % TODO: implement
-
-    TrayInput = sProvideLotInfo(5, RecipeOne, false)
-          .sProvideLotInfo(7, RecipeTwo, false)
-          .sProvideLotInfo(11, RecipeThree, false)
-        .sTrayDone
+    % Assumption: Only valid requests
+    EmptyComponent(oneWafer: Bool) = (
+            rProvideClosingWafer
+            .(oneWafer
+                -> RMoveFromTo(RobotTwo, ChuckEmptyOne, ChuckMeas)
+                    .RIdle(RobotTwo, ChuckEmptyOne, ChuckMeas)
+                <> RMoveFromTo(RobotThree, ChuckEmptyTwo, ChuckMeas)
+                    .RIdle(RobotThree, ChuckEmptyTwo, ChuckMeas)
+            )
+            .sProvidedClosingWafer
+            +
+            rStoreClosingWafer
+            .(!oneWafer
+                -> RMoveFromTo(RobotTwo, ChuckMeas, ChuckEmptyOne)
+                    .RIdle(RobotTwo, ChuckMeas, ChuckEmptyOne)
+                <> RMoveFromTo(RobotThree, ChuckMeas, ChuckEmptyTwo)
+                    .RIdle(RobotThree, ChuckMeas, ChuckEmptyTwo)
+            )
+            .sStoredClosingWafer
+        )
+        .EmptyComponent(!oneWafer)
         ;
 
-    %Machine components:
-    MachineRobot1 = sum p:Position. sum p2:Position. rRMoveFromTo(RobotOne, p, p2) . sRIdle(RobotOne, p, p2) . MachineRobot1;
-    MachineRobot2 = sum p:Position. sum p2:Position. rRMoveFromTo(RobotTwo, p, p2) . sRIdle(RobotTwo, p, p2) . MachineRobot2;
-    MachineRobot3 = sum p:Position. sum p2:Position. rRMoveFromTo(RobotThree, p, p2) . sRIdle(RobotThree, p, p2) . MachineRobot3;
-    MachineCalibrate = rCalibrate. sCalibrated . MachineCalibrate;
-    MachineSwap = rSwap . sSwapIdle . MachineSwap;
-    MachinePreMeasure = rPreMeasureWafer . sPreMeasured . MachinePreMeasure;
-    MachineMeasure = rMeasureWafer . sMeasured . MachineMeasure;
-    MachineProject = rProjectWafer . sProjected . MachineProject;
+    ProjectComponent(
+            config: Recipe, chuckAAtProj: Bool, measEmpty: Bool,
+            calibrate: Bool) =
+        (calibrate
+            -> (measEmpty
+                -> sProvideClosingWafer
+                    .rProvideClosingWafer
+                    .Calibrate
+                    .Calibrated
+                    .ProjectComponent(config, chuckAAtProj, measEmpty, false)
+            )
+            <> (
+                (sum toCalibrate:Bool
+                    .rChangeConfig(RecipeOne, toCalibrate)
+                    .(chuckAAtProj
+                        -> (measEmpty
+                            -> sProvideClosingWafer
+                                .rProvidedClosingWafer
+                        )
+                        .Swap
+                        .SwapIdle
+                    )
+                    .sStoreClosingWafer
+                    .rStoredClosingWafer
+                    .ProjectComponent(
+                        RecipeOne, false, measEmpty, toCalibrate)
+                 )
+                 + (sum toCalibrate:Bool
+                    .rChangeConfig(RecipeTwo, toCalibrate)
+                    .(!chuckAAtProj
+                        -> (measEmpty
+                            -> sProvideClosingWafer
+                                .rProvidedClosingWafer
+                        )
+                        .Swap
+                        .SwapIdle
+                    )
+                    .sStoreClosingWafer
+                    .rStoredClosingWafer
+                    .ProjectComponent(
+                        RecipeTwo, true, measEmpty, toCalibrate)
+                )
+                + (sum toCalibrate:Bool
+                    .rChangeConfig(RecipeThree, toCalibrate)
+                    .(!measEmpty
+                        -> sStoreClosingWafer
+                            .rStoredClosingWafer
+                    )
+                    .ProjectComponent(
+                        RecipeThree, chuckAAtProj, measEmpty, toCalibrate)
+                )
+                + rWaferReadyAtChuckIn
+                .RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)
+                .RIdle(RobotTwo, ChuckIn, ChuckMeas)
+                .sWaferTakenAtChuckIn
+                .MeasureWafer
+                .Measured
+                .Swap
+                .SwapIdle
+                .ProjectWafer
+                .Projected
+                .Swap
+                .SwapIdle
+                .RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)
+                .RIdle(RobotTwo, ChuckMeas, ChuckOut)
+                .sWaferReadyAtChuckOut
+                .rWaferTakenAtChuckOut
+            )
+        )
+        ;
+
+
+    TrayInput = sProvideLotInfo(5, RecipeOne, false)
+        .sProvideLotInfo(7, RecipeTwo, false)
+        .sProvideLotInfo(11, RecipeThree, false)
+        .sTrayDone
+        ;
 
 init
     hide({
@@ -136,9 +215,6 @@ init
          ChangeConfig
     },
     allow({
-        dddd,
-
-
         RMoveFromTo,
         Calibrate,
         PreMeasureWafer,
@@ -173,21 +249,14 @@ init
         rChangeConfig         | sChangeConfig         -> ChangeConfig,
         rChangedConfig        | sChangedConfig        -> ChangedConfig,
         rProvideLotInfo       | sProvideLotInfo       -> ProvideLotInfo,
-        sRMoveFromTo          | rRMoveFromTo          -> RMoveFromTo,
-        sCalibrate            | rCalibrate            -> Calibrate,
-        sPreMeasureWafer      | rPreMeasureWafer      -> PreMeasureWafer,
-        sMeasureWafer         | rMeasureWafer         -> MeasureWafer,
-        sProjectWafer         | rProjectWafer         -> ProjectWafer,
-        sSwap                 | rSwap                 -> Swap,
-        sRIdle                | rRIdle                -> RIdle,
-        sSwapIdle             | rSwapIdle             -> SwapIdle,
-        sPreMeasured          | rPreMeasured          -> PreMeasured,
-        sMeasured             | rMeasured             -> Measured,
-        sProjected            | rProjected            -> Projected,
-        sCalibrated           | rCalibrated           -> Calibrated
+        rProvideClosingWafer  | sProvideClosingWafer  -> ProvideClosingWafer,
+        rProvidedClosingWafer | sProvidedClosingWafer -> ProvidedClosingWafer,
+        rStoreClosingWafer    | sStoreClosingWafer    -> StoreClosingWafer,
+        rStoredClosingWafer   | sStoredClosingWafer   -> StoredClosingWafer
     },
-    MainComponent(0,RecipeOne,false) || IOComponent(true, 0, 0, Empty, Empty) || ProjectComponent || TrayInput
-    %Machine components:
-    || MachineRobot1 || MachineCalibrate || MachineSwap || MachinePreMeasure || MachineMeasure || MachineProject
-
+    MainComponent(0,RecipeOne,false)
+        || IOComponent(true, 0, 0, Empty, Empty)
+        || EmptyComponent(false)
+        || ProjectComponent(RecipeThree, false, false, false)
+        || TrayInput
 )));
