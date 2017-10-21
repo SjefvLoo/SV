@@ -80,6 +80,8 @@ act
 proc
     MainComponent =
         rTrayDone
+        .sChangeConfig(RecipeOne, false)  % Make sure chuck Meas is chuck A
+        .sProvideClosingWafer
         .Finished
         +
         sum wafers:Nat
@@ -138,12 +140,13 @@ proc
         (calibrate
             -> (measEmpty
                 -> sProvideClosingWafer
-                    .rProvideClosingWafer
-                    .Calibrate
-                    .Calibrated
-                    .ProjectComponent(config, chuckAAtProj, measEmpty, false)
+                    .rProvidedClosingWafer
                 <> tau
             )
+            .Calibrate
+            .Calibrated
+            .sStoreClosingWafer
+            .ProjectComponent(config, chuckAAtProj, measEmpty, false)
             <> (
                 (sum toCalibrate:Bool
                     .rChangeConfig(RecipeOne, toCalibrate)
@@ -157,8 +160,11 @@ proc
                         .SwapIdle
                         <> tau
                     )
-                    .sStoreClosingWafer
-                    .rStoredClosingWafer
+                    .(!(measEmpty || toCalibrate)
+                        -> sStoreClosingWafer
+                            .rStoredClosingWafer
+                        <> tau
+                    )
                     .sChangedConfig
                     .ProjectComponent(
                         RecipeOne, false, measEmpty, toCalibrate)
@@ -175,15 +181,18 @@ proc
                         .SwapIdle
                         <> tau
                     )
-                    .sStoreClosingWafer
-                    .rStoredClosingWafer
+                    .(!(measEmpty || toCalibrate)
+                        -> sStoreClosingWafer
+                            .rStoredClosingWafer
+                        <> tau
+                    )
                     .sChangedConfig
                     .ProjectComponent(
                         RecipeTwo, true, measEmpty, toCalibrate)
                 )
                 + (sum toCalibrate:Bool
                     .rChangeConfig(RecipeThree, toCalibrate)
-                    .(!measEmpty
+                    .(!(measEmpty || toCalibrate)
                         -> sStoreClosingWafer
                             .rStoredClosingWafer
                         <> tau
