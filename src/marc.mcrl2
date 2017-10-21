@@ -142,6 +142,7 @@ proc
                     .Calibrate
                     .Calibrated
                     .ProjectComponent(config, chuckAAtProj, measEmpty, false)
+                <> tau
             )
             <> (
                 (sum toCalibrate:Bool
@@ -150,9 +151,11 @@ proc
                         -> (measEmpty
                             -> sProvideClosingWafer
                                 .rProvidedClosingWafer
+                            <> tau
                         )
                         .Swap
                         .SwapIdle
+                        <> tau
                     )
                     .sStoreClosingWafer
                     .rStoredClosingWafer
@@ -166,9 +169,11 @@ proc
                         -> (measEmpty
                             -> sProvideClosingWafer
                                 .rProvidedClosingWafer
+                            <> tau
                         )
                         .Swap
                         .SwapIdle
+                        <> tau
                     )
                     .sStoreClosingWafer
                     .rStoredClosingWafer
@@ -181,6 +186,7 @@ proc
                     .(!measEmpty
                         -> sStoreClosingWafer
                             .rStoredClosingWafer
+                        <> tau
                     )
                     .sChangedConfig
                     .ProjectComponent(
