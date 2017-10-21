@@ -229,6 +229,17 @@ proc
         .sTrayDone
         ;
 
+    TrayInputLoop(currentWafers: Nat, maxWafers: Nat) =
+        (sum recipe:Recipe
+            .sum calibrate:Bool
+            .sProvideLotInfo(currentWafers, recipe, calibrate)
+        )
+        .((currentWafers < maxWafers)
+            -> TrayInputLoop(currentWafers + 1, maxWafers)
+            <> sTrayDone
+        )
+        ;
+
 init
     hide({
 %        AvailableWafers,
@@ -288,4 +299,5 @@ init
         || EmptyComponent(false)
         || ProjectComponent(RecipeThree, false, false, false)
         || TrayInput
+        %|| TrayInputLoop(1, 24)
 )));
