@@ -3,7 +3,7 @@ sort
         | ChuckEmptyOne | ChuckEmptyTwo;
     Recipe = struct RecipeOne | RecipeTwo | RecipeThree;
     Robot = struct RobotOne | RobotTwo | RobotThree;
-	ChuckStatus = struct Empty | Wafer | Processed;
+	ChuckStatus = struct Empty | Wafer | Processed | Notifying;
 
 act
 	dddd;
@@ -90,26 +90,29 @@ proc
 		));
 		
     
-    IOComponent(idle: Bool, wafers: Nat, cin:ChuckStatus, cout:ChuckStatus) = 
-		((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n, cin, cout)) + 
-		((!idle && wafers == 0) -> sCompletedLot . IOComponent(true, wafers, cin, cout)) +
-		(!idle && wafers > 0) -> (
-			((cin == Empty) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . rRIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, wafers, Wafer, cout)) +
-			((cin == Wafer) -> sPreMeasureWafer . rPreMeasured . IOComponent(idle, wafers, Processed, cout)) + 
-			((cin == Processed) -> sWaferReadyAtChuckIn . IOComponent(idle, wafers, cin, cout)) + 
-			((cin == Processed) -> rWaferTakenAtChuckIn . IOComponent(idle, wafers, Empty, cout)) + 
+    IOComponent(idle: Bool, wtake: Nat, wplace: Nat, cin:ChuckStatus, cout:ChuckStatus) = 
+		((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n, n, cin, cout)) + 
+		((!idle && wplace == 0) -> sCompletedLot . IOComponent(true, wtake, wplace, cin, cout)) +
+		(!idle) -> (
+			((cin == Empty && wtake > 0) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . rRIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, Int2Nat(wtake -1), wplace, Wafer, cout)) +
+			((cin == Wafer) -> sPreMeasureWafer . rPreMeasured . IOComponent(idle, wtake, wplace, Processed, cout)) + 
+			((cin == Processed) -> sWaferReadyAtChuckIn . IOComponent(idle, wtake, wplace, Notifying, cout)) + 
+			((cin == Notifying) -> rWaferTakenAtChuckIn . IOComponent(idle, wtake, wplace, Empty, cout)) + 
 			
-			((cout == Wafer) -> sRMoveFromTo(RobotOne, ChuckOut, Tray) . rRIdle(RobotOne, ChuckOut, Tray) . IOComponent(idle, Int2Nat(wafers - 1), cin, Empty)) + 
-			((cout == Empty) -> rWaferReadyAtChuckOut . IOComponent(idle, wafers, cin, Wafer)) + 
-			((cout == Empty) -> sWaferTakenAtChuckOut . IOComponent(idle, wafers, cin, cout))
-		);
+			((cout == Wafer && wplace > 0) -> sRMoveFromTo(RobotOne, ChuckOut, Tray) . rRIdle(RobotOne, ChuckOut, Tray) . IOComponent(idle, wtake, wplace, cin, Notifying)) + 
+			((cout == Empty) -> rWaferReadyAtChuckOut . IOComponent(idle, wtake, wplace, cin, Wafer)) + 
+			((cout == Notifying) -> sWaferTakenAtChuckOut . IOComponent(idle, wtake, Int2Nat(wplace - 1), cin, Empty))
+		)
+		;
 		
 	%ProjectComponentStub(b:Bool) = 
 	%	(!b) -> (rWaferReadyAtChuckIn . sWaferTakenAtChuckIn . ProjectComponentStub(true)) <> (sWaferReadyAtChuckOut . rWaferTakenAtChuckOut . ProjectComponentStub(false));
     
     ProjectComponent = Finished;  % TODO: implement
     
-    TrayInput = sProvideLotInfo(1, RecipeOne, false)
+    TrayInput = sProvideLotInfo(5, RecipeOne, false)
+          .sProvideLotInfo(7, RecipeTwo, false)
+          .sProvideLotInfo(11, RecipeThree, false)
 		.sTrayDone
         ;
 	
@@ -183,7 +186,7 @@ init
 		sProjected            | rProjected            -> Projected,
 		sCalibrated           | rCalibrated           -> Calibrated
     },
-    MainComponent(0,RecipeOne,false) || IOComponent(true, 0, Empty, Empty) || ProjectComponent || TrayInput
+    MainComponent(0,RecipeOne,false) || IOComponent(true, 0, 0, Empty, Empty) || ProjectComponent || TrayInput
 	%Machine components:
 	|| MachineRobot1 || MachineCalibrate || MachineSwap || MachinePreMeasure || MachineMeasure || MachineProject
 	 
