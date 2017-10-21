@@ -78,15 +78,20 @@ act
         sTrayDone, rTrayDone;
 
 proc
-    MainComponent(wafers:Nat, currentRecipe:Recipe, calibrateNow: Bool) =
-        ((wafers==0 && !calibrateNow) -> (
-            (sum n:Nat. sum r:Recipe. sum c:Bool. (rProvideLotInfo(n, r, c) . MainComponent(n, r, c))) +
-            rTrayDone . Finished
-        )) +
-        ((wafers>0 && !calibrateNow) -> (
-            (sAvailableWafers(wafers) . MainComponent(wafers, currentRecipe, calibrateNow)) +
-            rCompletedLot . MainComponent(0, currentRecipe, false)
-        ));
+    MainComponent =
+        rTrayDone
+        .Finished
+        +
+        sum wafers:Nat
+        .sum recipe:Recipe
+        .sum calibrate:Bool
+        .rProvideLotInfo(wafers, recipe, calibrate)
+        .sChangeConfig(recipe, calibrate)
+        .rChangedConfig
+        .sAvailableWafers(wafers)
+        .rCompletedLot
+        .MainComponent
+        ;
 
 
     IOComponent(idle: Bool, wtake: Nat, wplace: Nat, cin:ChuckStatus, cout:ChuckStatus) =
@@ -263,7 +268,7 @@ init
         rStoreClosingWafer    | sStoreClosingWafer    -> StoreClosingWafer,
         rStoredClosingWafer   | sStoredClosingWafer   -> StoredClosingWafer
     },
-    MainComponent(0,RecipeOne,false)
+    MainComponent
         || IOComponent(true, 0, 0, Empty, Empty)
         || EmptyComponent(false)
         || ProjectComponent(RecipeThree, false, false, false)
