@@ -191,7 +191,7 @@ proc
                 .Swap
                 .SwapIdle
                 .RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)
-                .RIdle(RobotTwo, ChuckMeas, ChuckOut)
+                .RIdle(RobotThree, ChuckMeas, ChuckOut)
                 .sWaferReadyAtChuckOut
                 .rWaferTakenAtChuckOut
 				.ProjectComponent(config, chuckAAtProj, measEmpty,calibrate)
@@ -200,9 +200,9 @@ proc
         ;
 
 
-    TrayInput = sProvideLotInfo(5, RecipeOne, false)
-        .sProvideLotInfo(7, RecipeTwo, false)
-        .sProvideLotInfo(11, RecipeThree, false)
+    TrayInput = sProvideLotInfo(2, RecipeOne, false)
+        .sProvideLotInfo(3, RecipeTwo, false)
+%        .sProvideLotInfo(11, RecipeThree, false)
         .sTrayDone
         ;
 
