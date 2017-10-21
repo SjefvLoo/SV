@@ -6,22 +6,37 @@ sort
 
 
 act
+	dddd;
     % Lot Controller to Machine
     RMoveFromTo: Robot # Position # Position;
+		sRMoveFromTo: Robot # Position # Position;
+		rRMoveFromTo: Robot # Position # Position;
     Calibrate;
+		sCalibrate, rCalibrate;
     PreMeasureWafer;
+		sPreMeasureWafer, rPreMeasureWafer;
     MeasureWafer;
+		sMeasureWafer, rMeasureWafer;
     ProjectWafer;
+		sProjectWafer, rProjectWafer;
     Swap;
+		sSwap, rSwap;
 
     % Machine to Lot Controller
     ProvideLotInfo: Nat # Recipe # Bool;
     RIdle: Robot # Position # Position;
+		sRIdle: Robot # Position # Position;
+		rRIdle: Robot # Position # Position;
     SwapIdle;
+		sSwapIdle, rSwapIdle;
     PreMeasured;
+		rPreMeasured, sPreMeasured;
     Measured;
+		sMeasured, rMeasured;
     Projected;
+		sProjected, rProjected;
     Calibrated;
+		sCalibrated, rCalibrated;
 
     % Lot Controller to User
     Finished;
@@ -56,9 +71,18 @@ act
         sProvideLotInfo: Nat # Recipe # Bool;
 
 proc
-    MainComponent = Finished;  % TODO: implement
+    MainComponent(wafers:Nat, currentRecipe:Recipe, calibrateNow: Bool) = 
+		((wafers==0 && !calibrateNow) -> (sum n:Nat. sum r:Recipe. sum c:Bool. (rProvideLotInfo(n, r, c) . MainComponent(n, r, c)))) + 
+		((wafers>0 && !calibrateNow) -> sAvailableWafers(wafers) . MainComponent(wafers, currentRecipe, calibrateNow))
+		
+		;
     
-    IOComponent = Finished;  % TODO: implement
+    IOComponent(idle: Bool, wafers: Nat) = 
+		((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n)) + 
+		((wafers == 0) -> sCompletedLot . IOComponent(true, wafers)) +
+		(!idle && wafers > 0) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . IOComponent(idle, Int2Nat(wafers - 1));
+		
+	%ProjectComponentStub = Finished;
     
     ProjectComponent = Finished;  % TODO: implement
     
@@ -66,17 +90,30 @@ proc
         .sProvideLotInfo(7, RecipeTwo, true)
         .sProvideLotInfo(11, RecipeThree, false)
         ;
+	
+	%Machine components:
+	MachineRobot1 = sum p:Position. sum p2:Position. rRMoveFromTo(RobotOne, p, p2) . sRIdle(RobotOne, p, p2) . MachineRobot1;
+	MachineRobot2 = sum p:Position. sum p2:Position. rRMoveFromTo(RobotTwo, p, p2) . sRIdle(RobotTwo, p, p2) . MachineRobot2;
+	MachineRobot3 = sum p:Position. sum p2:Position. rRMoveFromTo(RobotThree, p, p2) . sRIdle(RobotThree, p, p2) . MachineRobot3;
+	MachineCalibrate = rCalibrate. sCalibrated . MachineCalibrate;
+	MachineSwap = rSwap . sSwapIdle . MachineSwap;
+	MachinePreMeasure = rPreMeasureWafer . sPreMeasured . MachinePreMeasure;
+	MachineMeasure = rMeasureWafer . sMeasured . MachineMeasure;
+	MachineProject = rProjectWafer . sProjected . MachineProject;
 
 init
     hide({
-        AvailableWafers,
-        CompletedLot,
-        WaferReadyAtChuckIn,
-        WaferReadyAtChuckOut,
-        ChangeConfig,
-        Calibrated
+%        AvailableWafers,
+%        CompletedLot,
+%        WaferReadyAtChuckIn,
+%        WaferReadyAtChuckOut,
+%        Calibrated,
+		 ChangeConfig
     },
     allow({
+		dddd,
+		
+		
         RMoveFromTo,
         Calibrate,
         PreMeasureWafer,
@@ -95,8 +132,7 @@ init
         CompletedLot,
         WaferReadyAtChuckIn,
         WaferReadyAtChuckOut,
-        ChangeConfig,
-        Calibrated
+        ChangeConfig
     },
     comm({
         rAvailableWafers      | sAvailableWafers      -> AvailableWafers,
@@ -105,7 +141,22 @@ init
         rWaferReadyAtChuckOut | sWaferReadyAtChuckOut -> WaferReadyAtChuckOut,
         rChangeConfig         | sChangeConfig         -> ChangeConfig,
         rChangedConfig        | sChangedConfig        -> ChangedConfig,
-        rProvideLotInfo       | sProvideLotInfo       -> ProvideLotInfo
+        rProvideLotInfo       | sProvideLotInfo       -> ProvideLotInfo,
+		sRMoveFromTo          | rRMoveFromTo          -> RMoveFromTo,
+		sCalibrate            | rCalibrate            -> Calibrate,
+		sPreMeasureWafer      | rPreMeasureWafer      -> PreMeasureWafer,
+		sMeasureWafer         | rMeasureWafer         -> MeasureWafer,
+		sProjectWafer         | rProjectWafer         -> ProjectWafer,
+		sSwap                 | rSwap                 -> Swap,
+    	sRIdle                | rRIdle                -> RIdle,
+		sSwapIdle             | rSwapIdle             -> SwapIdle,
+		sPreMeasured          | rPreMeasured          -> PreMeasured,
+		sMeasured             | rMeasured             -> Measured,
+		sProjected            | rProjected            -> Projected,
+		sCalibrated           | rCalibrated           -> Calibrated
     },
-    MainComponent || IOComponent || ProjectComponent || TrayInput
+    MainComponent(0,RecipeOne,false) || IOComponent(true, 0) || ProjectComponent || TrayInput
+	%Machine components:
+	|| MachineRobot1 || MachineCalibrate || MachineSwap || MachinePreMeasure || MachineMeasure || MachineProject
+	 
 )));
