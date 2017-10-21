@@ -13,8 +13,8 @@ nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (val(!(ChuckMeas in C) && !(ChuckProj in C)) => [Swap]X(C)) &&
 (val(!(ChuckMeas in C) && ChuckProj in C) => [Swap]X(C-{ChuckProj}+{ChuckMeas})) &&
 (val(ChuckMeas in C && !(ChuckProj in C)) => [Swap]X(C-{ChuckMeas}+{ChuckProj})) &&
-([!(
-	(forall r:Robot, p1, p2:Position.RMoveFromTo(r,p1,p1)) ||
+([forall r:Robot, p1, p2:Position.!(
+	RMoveFromTo(r,p1,p1) ||
 	Swap ||
 	Finished
 )]X(C)) &&
