@@ -194,6 +194,7 @@ proc
                 .RIdle(RobotTwo, ChuckMeas, ChuckOut)
                 .sWaferReadyAtChuckOut
                 .rWaferTakenAtChuckOut
+				.ProjectComponent(config, chuckAAtProj, measEmpty,calibrate)
             )
         )
         ;
