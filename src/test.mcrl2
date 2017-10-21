@@ -1,0 +1,7 @@
+sort
+	S = struct s1|s2;
+act
+	a: S;
+	b,c;
+init
+	a(s1).c.b + c.b;

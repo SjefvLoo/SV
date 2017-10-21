@@ -1,0 +1,7 @@
+forall r:Robot,p1,p2,p1',p2':Position.(
+	[true* . RMoveFromTo(r, p1,p2) . (!RIdle(r,p1,p2))* . RMoveFromTo(r, p1',p2')]false) &&
+([true* . Swap . (!(SwapIdle))* . Swap]false) &&
+([true* . PreMeasureWafer . (!(PreMeasured))* . PreMeasureWafer]false) &&
+([true* . MeasureWafer . (!(Measured))* . MeasureWafer]false) &&
+([true* . ProjectWafer . (!(Projected))* . ProjectWafer]false) &&
+([true* . Calibrate . (!(Calibrated))* . Calibrate]false)

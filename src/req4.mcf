@@ -1,0 +1,8 @@
+nu X(w : Position -> Bool = (lambda p:Position. false)[ChuckMeas -> true][ChuckProj -> true]).
+(forall r:Robot,p1,p2:Position.[RMoveFromTo(r,p2,p2)](
+	val(p1 == Tray || w(p1)) &&
+	val(p2 == Tray || !w(p2)) &&
+	X(w[p1 -> false]))
+) &&
+(forall r:Robot,p1,p2:Position.[RIdle(r,p1,p2)]X(w[p2->true])) &&
+[forall r:Robot,p1,p2:Position.!(RMoveFromTo(r,p1,p2) || RIdle(r,p1,p2))]X(w)

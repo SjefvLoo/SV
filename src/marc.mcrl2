@@ -4,7 +4,6 @@ sort
     Recipe = struct RecipeOne | RecipeTwo | RecipeThree;
     Robot = struct RobotOne | RobotTwo | RobotThree;
     ChuckStatus = struct Empty | Wafer | Processed | Notifying;
-
 act
     % Lot Controller to Machine
     RMoveFromTo: Robot # Position # Position;
