@@ -53,9 +53,15 @@ act
     WaferReadyAtChuckIn;
         rWaferReadyAtChuckIn;
         sWaferReadyAtChuckIn;
+    WaferTakenAtChuckIn;
+        rWaferTakenAtChuckIn;
+        sWaferTakenAtChuckIn;
     WaferReadyAtChuckOut;
         rWaferReadyAtChuckOut;
         sWaferReadyAtChuckOut;
+    WaferTakenAtChuckOut;
+        rWaferTakenAtChuckOut;
+        sWaferTakenAtChuckOut;
 
     % Communication between MainComponent and ProjectComponent
     ChangeConfig: Recipe # Bool;
@@ -69,28 +75,42 @@ act
     % ProvideLotInfo is from Machine to LotController
         rProvideLotInfo: Nat # Recipe # Bool;
         sProvideLotInfo: Nat # Recipe # Bool;
+	TrayDone;
+		sTrayDone, rTrayDone;
 
 proc
     MainComponent(wafers:Nat, currentRecipe:Recipe, calibrateNow: Bool) = 
-		((wafers==0 && !calibrateNow) -> (sum n:Nat. sum r:Recipe. sum c:Bool. (rProvideLotInfo(n, r, c) . MainComponent(n, r, c)))) + 
-		((wafers>0 && !calibrateNow) -> sAvailableWafers(wafers) . MainComponent(wafers, currentRecipe, calibrateNow));
+		((wafers==0 && !calibrateNow) -> (
+			(sum n:Nat. sum r:Recipe. sum c:Bool. (rProvideLotInfo(n, r, c) . MainComponent(n, r, c))) + 
+			rTrayDone . Finished
+		)) + 
+		((wafers>0 && !calibrateNow) -> (
+			(sAvailableWafers(wafers) . MainComponent(wafers, currentRecipe, calibrateNow)) + 
+			rCompletedLot . MainComponent(0, currentRecipe, false)
+		));
+		
     
     IOComponent(idle: Bool, wafers: Nat, cin:ChuckStatus, cout:ChuckStatus) = 
 		((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n, cin, cout)) + 
-		((wafers == 0) -> sCompletedLot . IOComponent(true, wafers, cin, cout)) +
+		((!idle && wafers == 0) -> sCompletedLot . IOComponent(true, wafers, cin, cout)) +
 		(!idle && wafers > 0) -> (
 			((cin == Empty) -> sRMoveFromTo(RobotOne, Tray, ChuckIn) . rRIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, wafers, Wafer, cout)) +
-			((cin == Wafer) -> sPreMeasureWafer . rPreMeasured . IOComponent(idle, wafers, Processed, cout))
-			%Update instatus if Processed
+			((cin == Wafer) -> sPreMeasureWafer . rPreMeasured . IOComponent(idle, wafers, Processed, cout)) + 
+			((cin == Processed) -> sWaferReadyAtChuckIn . IOComponent(idle, wafers, cin, cout)) + 
+			((cin == Processed) -> rWaferTakenAtChuckIn . IOComponent(idle, wafers, Empty, cout)) + 
+			
+			((cout == Wafer) -> sRMoveFromTo(RobotOne, ChuckOut, Tray) . rRIdle(RobotOne, ChuckOut, Tray) . IOComponent(idle, Int2Nat(wafers - 1), cin, Empty)) + 
+			((cout == Empty) -> rWaferReadyAtChuckOut . IOComponent(idle, wafers, cin, Wafer)) + 
+			((cout == Empty) -> sWaferTakenAtChuckOut . IOComponent(idle, wafers, cin, cout))
 		);
 		
-	%ProjectComponentStub = Finished;
+	%ProjectComponentStub(b:Bool) = 
+	%	(!b) -> (rWaferReadyAtChuckIn . sWaferTakenAtChuckIn . ProjectComponentStub(true)) <> (sWaferReadyAtChuckOut . rWaferTakenAtChuckOut . ProjectComponentStub(false));
     
     ProjectComponent = Finished;  % TODO: implement
     
-    TrayInput = sProvideLotInfo(5, RecipeOne, false)
-        .sProvideLotInfo(7, RecipeTwo, true)
-        .sProvideLotInfo(11, RecipeThree, false)
+    TrayInput = sProvideLotInfo(1, RecipeOne, false)
+		.sTrayDone
         ;
 	
 	%Machine components:
@@ -132,13 +152,19 @@ init
         Finished,
         AvailableWafers,
         CompletedLot,
+		WaferTakenAtChuckIn,
         WaferReadyAtChuckIn,
+		WaferTakenAtChuckOut,
         WaferReadyAtChuckOut,
-        ChangeConfig
+        ChangeConfig,
+		TrayDone
     },
     comm({
+		sTrayDone             | rTrayDone             -> TrayDone,
         rAvailableWafers      | sAvailableWafers      -> AvailableWafers,
         rCompletedLot         | sCompletedLot         -> CompletedLot,
+		rWaferTakenAtChuckIn  | sWaferTakenAtChuckIn  -> WaferTakenAtChuckIn,
+		rWaferTakenAtChuckOut | sWaferTakenAtChuckOut -> WaferTakenAtChuckOut,
         rWaferReadyAtChuckIn  | sWaferReadyAtChuckIn  -> WaferReadyAtChuckIn,
         rWaferReadyAtChuckOut | sWaferReadyAtChuckOut -> WaferReadyAtChuckOut,
         rChangeConfig         | sChangeConfig         -> ChangeConfig,

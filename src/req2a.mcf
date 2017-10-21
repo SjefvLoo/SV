@@ -1,5 +1,5 @@
 nu X(i:Int = 0).
-[RMoveFromTo(r1,ptray,pin)]X(i+1) &&
-[RMoveFromTo(r1,pout, ptray)]X(i-1) &&
-[!(Finished || RMoveFromTo(r1,ptray,pin) || RMoveFromTo(r1, pout, ptray))]X(i) &&
+[RMoveFromTo(RobotOne,Tray,ChuckIn)]X(i+1) &&
+[RMoveFromTo(RobotOne,ChuckOut, Tray)]X(i-1) &&
+[!(Finished || RMoveFromTo(RobotOne,Tray,ChuckIn) || RMoveFromTo(RobotOne, ChuckOut, Tray))]X(i) &&
 [Finished](val(i==0))
