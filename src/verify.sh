@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-if [ -z "$1" ]
-        || [ ! "$(find requirements | grep "requirements/$1.mcf")" ]; then
+if [ -z "$1" ] \
+        || [ ! "$(find requirements | grep "requirements/req$1.mcf")" ]; then
     echo 'Requirement does not exist' >&2
     exit 1
 fi
