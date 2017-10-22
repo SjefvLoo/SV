@@ -1,0 +1,3 @@
+[true* . RMoveFromTo(RobotOne, Tray, ChuckIn) . !PreMeasured
+    . RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)
+] false

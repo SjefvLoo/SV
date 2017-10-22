@@ -1,0 +1,7 @@
+(forall r:Robot, p1, p2, p1prime, p2prime : Position.
+    [true*
+        .RMoveFromTo(r, p1, p2)
+        .!RIdle(r, p1, p2)*
+        .RMoveFromTo(r, p1prime, p2prime)
+    ] false
+)
