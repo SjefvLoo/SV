@@ -1,1 +1,16 @@
 % Wafers will not be moved from Meas position during measurement or calibration.
+[true* . MeasureWafer . (!Measured)* 
+    .(exists p: RobotPositionT. 
+        val(p in allowed && from(p) == ChuckMeas)
+            && RMoveFromTo(robot(p), from(p), to(p))
+    )
+    ]false
+
+&&
+
+[true* . Calibrate . (!Calibrated)* 
+    .(exists p: RobotPositionT. 
+        val(p in allowed && from(p) == ChuckMeas)
+            && RMoveFromTo(robot(p), from(p), to(p))
+    )
+    ]false

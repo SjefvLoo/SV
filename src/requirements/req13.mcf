@@ -1,6 +1,6 @@
 % Measurement only takes place when a non-closing wafer is at Meas.
 
-nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
+(nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (forall p:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place
     val(p in allowed)  =>
@@ -21,4 +21,23 @@ nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
     (forall p:RobotPositionT. val(p in allowed)  => !RMoveFromTo(robot(p),from(p),to(p))) &&
     !Swap
 )]X(C) &&
-([ProjectWafer](val(!(ChuckProj in C))))
+[MeasureWafer]val(!(ChuckMeas in C)))
+
+&&
+
+(nu X(w : Position -> Bool = (lambda p:Position. false)[ChuckMeas -> true][ChuckProj -> true]).
+(forall p:RobotPositionT.
+    % Prune the robot x positions options that are not allowed to take place
+    val(p in allowed) => (
+        [RMoveFromTo(robot(p),from(p),to(p))](X(w[from(p) -> false]))
+        &&
+        [RIdle(robot(p), from(p),to(p))](X(w[to(p) -> true]))
+    ) &&
+    [(
+        forall p:RobotPositionT.
+        val(p in allowed) => (
+            !RMoveFromTo(robot(p), from(p), to(p)) && !RIdle(robot(p), from(p), to(p))
+        )
+    )]X(w) &&
+    [MeasureWafer]val(w(ChuckMeas))
+))
