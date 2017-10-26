@@ -1,17 +1,24 @@
 % Wafers that are being projected have been measured at Meas.
 
 nu X(mm: Bool = false, pm: Bool = false).
-[Measured]X(true, pm)
-&& [SwapIdle]X(pm, mm)
-&& [
+[Measured]X(true, pm) &&
+[SwapIdle]X(pm, mm) &&
 	(forall p:RobotPositionT.
+		% Prune the robot x positions options that are not allowed to take place
+		val(p in allowed)  =>
+		[RMoveFromTo(robot(p),from(p),to(p))](
+			val(from(p) == ChuckMeas) => X(false,pm)
+		)
+		&&
+		[RMoveFromTo(robot(p),from(p),to(p))](
+			val(!(from(p) == ChuckMeas)) => X(mm,pm)
+		)
+	) &&
+[(
     % Prune the robot x positions options that are not allowed to take place
-    val(p in allowed)  =>
-	[RMoveFromTo(robot(p),from(p),to(p))](
-		val(from(p) == ChuckMeas) => X(false,pm)
-	)
-    &&
-	[RMoveFromTo(robot(p),from(p),to(p))](
-		val(!(from(p) == ChuckMeas)) => X(mm,pm)
-	))]
-&& [!(Projected || SwapIdle || RMoveFromTo(RobotTwo, ChuckMeas, ChuckOut))]X(mp,pp)
+    (forall p:RobotPositionT. val(p in allowed)  => !RMoveFromTo(robot(p),from(p),to(p))) &&
+    !Measured &&
+    !SwapIdle &&
+	!ProjectWafer
+)]X(mm,pm) &&
+[ProjectWafer](val(pm == true) && X(mm,pm))
