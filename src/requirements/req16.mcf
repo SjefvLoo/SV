@@ -1,0 +1,8 @@
+% If a lot requires calibration: no wafer of this lot will be moved to Meas before calibration has finished.
+
+forall n:Nat, r:Recipe.[
+    true*
+    .ProvideLotInfo(n, r, true)
+    .!Calibrated
+    .RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)
+] false

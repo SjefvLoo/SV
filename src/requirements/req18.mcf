@@ -1,0 +1,5 @@
+nu X(mp: Bool = false, pp: Bool = false)
+.[Projected]X(mp, true)
+&& [Swapped]X(pp, mp)
+&& [RMofeFromTo(RobotThree, ChuckMeas, ChuckOut)](mp && X(false, pp))
+&& [!(Projected|SwapIdle|RMoveFromTo(RobotThree, ChuckMeas, ChuckOut))]X(mp, pp)
