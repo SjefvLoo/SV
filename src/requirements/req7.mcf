@@ -3,7 +3,7 @@
 nu X(mm: Bool = false, pm: Bool = false).
 [Measured]X(true, pm)
 && [SwapIdle]X(pm, mm)
-&& [
+&& 
 	(forall p:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place
     val(p in allowed)  =>
@@ -13,5 +13,5 @@ nu X(mm: Bool = false, pm: Bool = false).
     &&
 	[RMoveFromTo(robot(p),from(p),to(p))](
 		val(!(from(p) == ChuckMeas)) => X(mm,pm)
-	))]
+	))
 && [!(Projected || SwapIdle || RMoveFromTo(RobotTwo, ChuckMeas, ChuckOut))]X(mp,pp)
