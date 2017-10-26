@@ -1,4 +1,5 @@
-% If a lot requires calibration: no wafer of this lot will be moved to Meas before calibration has finished.
+% If a lot requires calibration: no wafer of this lot will be moved to Meas
+% before calibration has finished.
 
 forall n:Nat, r:Recipe.[
     true*

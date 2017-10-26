@@ -1,1 +1,5 @@
+% The Measure component will only receive a MeasureWafer command when it is
+% idle.
+
+
 [true* . MeasureWafer . !Measured* . MeasureWafer ] false

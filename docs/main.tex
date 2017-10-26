@@ -5,6 +5,7 @@
 \usepackage[english]{babel}
 \usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
 \usepackage[utf8]{inputenc}
+\usepackage{listings}
 \usepackage{todonotes}
 \usepackage{url}
 \usepackage{xspace}
@@ -28,6 +29,21 @@
 \newcommand{\chuckMeas}{$\mathit{Meas}$\xspace}
 \newcommand{\chuckProj}{$\mathit{Proj}$\xspace}
 
+
+\lstdefinelanguage{mcrl2}{
+    morecomment=[l]\%
+    morekeywords=[1]{sort, cons, map, var, eqn, act, proc, init, struct},
+    morekeywords=[2]{delta, tau, true, false},
+    morekeywords=[3]{sum, block, allow, hide, rename, comm},
+    morekeywords=[4]{whr, end, lambda, forall, exists, div, mod, in, val},
+    morekeywords=[5]{Bool, Pos, Nat, Int, Real, List, Set, Bag},
+    morekeywords=[6]{Position,Recipe,Robot,ChuckStatus,RobotPositionT},
+    sensitive=true,
+}[keywords, comments]
+\lstset{
+    language=mcrl2
+}
+
 \title{2IMF30 - System Validation - ASML Case Study}
 \author{
     Brouwers, R.F.G.M. (Robin) \qquad Student number: \texttt{0743220} \\
@@ -49,4 +65,86 @@
     \input{sections/ext_interactions}
     \input{sections/req2int}
     \input{sections/modal_formulas}
+
+    \appendix
+    \section{Model}
+    \lstinputlisting{../src/model.mcrl2}
+    
+    \section{Requirements}
+    \subsection{Requirement 1}
+    \lstinputlisting{../src/requirements/req1.mcf}
+    
+    \subsection{Requirement 2}
+    \subsubsection{Requirement 2a}
+    \lstinputlisting{../src/requirements/req2a.mcf}
+    
+    \subsubsection{Requirement 2b}
+    \lstinputlisting{../src/requirements/req2b.mcf}
+    
+    \subsubsection{Requirement 2c}
+    \lstinputlisting{../src/requirements/req2c.mcf}
+    
+    \subsection{Requirement 3}
+    \subsubsection{Requirement 3a}
+    \lstinputlisting{../src/requirements/req3a.mcf}
+    
+    \subsubsection{Requirement 3b}
+    \lstinputlisting{../src/requirements/req3b.mcf}
+    
+    \subsubsection{Requirement 3c}
+    \lstinputlisting{../src/requirements/req3c.mcf}
+    
+    \subsubsection{Requirement 3d}
+    \lstinputlisting{../src/requirements/req3d.mcf}
+    
+    \subsubsection{Requirement 3e}
+    \lstinputlisting{../src/requirements/req3e.mcf}
+    
+    \subsubsection{Requirement 3f}
+    \lstinputlisting{../src/requirements/req3f.mcf}
+    
+    \subsection{Requirement 4}
+    \lstinputlisting{../src/requirements/req4.mcf}
+    
+    \subsection{Requirement 5}
+    \lstinputlisting{../src/requirements/req5.mcf}
+    
+    \subsection{Requirement 6}
+    \lstinputlisting{../src/requirements/req6.mcf}
+    
+    \subsection{Requirement 7}
+    \lstinputlisting{../src/requirements/req7.mcf}
+    
+    \subsection{Requirement 8}
+    \lstinputlisting{../src/requirements/req8.mcf}
+    
+    \subsection{Requirement 9}
+    \lstinputlisting{../src/requirements/req9.mcf}
+    
+    \subsection{Requirement 10}
+    \lstinputlisting{../src/requirements/req10.mcf}
+    
+    \subsection{Requirement 11}
+    \lstinputlisting{../src/requirements/req11.mcf}
+    
+    \subsection{Requirement 12}
+    \lstinputlisting{../src/requirements/req12.mcf}
+    
+    \subsection{Requirement 13}
+    \lstinputlisting{../src/requirements/req13.mcf}
+    
+    \subsection{Requirement 14}
+    \lstinputlisting{../src/requirements/req14.mcf}
+    
+    \subsection{Requirement 15}
+    \lstinputlisting{../src/requirements/req15.mcf}
+    
+    \subsection{Requirement 16}
+    \lstinputlisting{../src/requirements/req16.mcf}
+    
+    \subsection{Requirement 17}
+    \lstinputlisting{../src/requirements/req17.mcf}
+    
+    \subsection{Requirement 18}
+    \lstinputlisting{../src/requirements/req18.mcf}
 \end{document}

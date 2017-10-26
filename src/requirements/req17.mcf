@@ -1,4 +1,5 @@
-% If Calibrate occurs the wafers at location ChuckMeas and ChuckProj must be closing wafers.
+% If Calibrate occurs the wafers at location ChuckMeas and ChuckProj must be
+% closing wafers.
 
 nu X(C : Set(Position) = {ChuckMeas, ChuckProj})
 .forall r: Robot, p1, p2: Position.(
