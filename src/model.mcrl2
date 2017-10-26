@@ -237,14 +237,16 @@ proc
         .sTrayDone
         ;
 
-    TrayInputLoop(currentWafers: Nat, maxWafers: Nat) =
-        (sum recipe:Recipe
-            .sum calibrate:Bool
-            .sProvideLotInfo(currentWafers, recipe, calibrate)
-        )
-        .((currentWafers < maxWafers)
-            -> TrayInputLoop(currentWafers + 1, maxWafers)
-            <> sTrayDone
+    TrayInputLoop(maxLots: Nat, maxWafersPerLot: Nat) =
+        TrayDone
+        + ((maxLots > 0)
+            -> sum wafers:Nat
+                .((1 <= wafers && wafers <= maxWafersPerLot)
+                    -> sum recipe:Recipe
+                        .sum calibrate:Bool
+                        .sProvideLotInfo(wafers, recipe, calibrate)
+                )
+                .TrayInputLoop(Int2Nat(maxLots - 1), maxWafersPerLot)
         )
         ;
 
@@ -307,5 +309,5 @@ init
         || EmptyComponent(false)
         || ProjectComponent(RecipeThree, false, false, false)
         || TrayInput
-        %|| TrayInputLoop(1, 24)
+        %|| TrayInputLoop(5, 5)
 )));
