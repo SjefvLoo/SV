@@ -18,5 +18,5 @@ else
     mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps" \
         && lps2pbes "${MCRL2_NAME}.lps" "requirements/req$1.pbes" \
             -f "requirements/req$1.mcf" \
-        && pbes2bool -s2 "requirements/req$1.pbes" --rewriter=jittyc -v
+        && pbes2bool $PFLAGS -s2 "requirements/req$1.pbes" --rewriter=jittyc -v
 fi

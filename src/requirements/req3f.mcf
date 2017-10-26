@@ -1,1 +1,3 @@
+% The calibrate component will only receive a Calibrate command when it is idle.
+
 [true* . Calibrate . !Calibrated* . Calibrate] false

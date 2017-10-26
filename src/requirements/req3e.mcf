@@ -1,1 +1,4 @@
+% The Project component will only receive a ProjectWafer command when it is
+% idle.
+
 [true* . ProjectWafer . !Projected* . ProjectWafer] false

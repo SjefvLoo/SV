@@ -1,4 +1,4 @@
-% Only closing wafers can be placed on Empty1 and Empty2.
+% Only closing wafers can be placed on EmptyOne and EmptyTwo.
 
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (forall p:RobotPositionT.

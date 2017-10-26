@@ -1,3 +1,6 @@
+% When Finished happens:
+% Meas and Proj contain a closing wafer.
+
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (forall p:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place

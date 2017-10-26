@@ -1,1 +1,3 @@
+% The Swap component will only receive a Swap command when it is idle.
+
 [true* . Swap . !SwapIdle* . Swap] false

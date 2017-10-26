@@ -1,4 +1,4 @@
-% If MeasureWafer occurs there is a wafer at positon pmeas and this is a non-closing wafer.
+% Measurement only takes place when a non-closing wafer is at Meas.
 
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (forall p:RobotPositionT.
