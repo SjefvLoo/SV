@@ -1,1 +1,0 @@
-[forall s:S.!(a(s) || c)]<true>false
