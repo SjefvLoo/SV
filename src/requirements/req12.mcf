@@ -1,0 +1,16 @@
+% A wafer from a lot is only projected if the chuck it is contained on is in the recipe for its 
+% corresponding lot.
+
+nu X(rec: Recipe = RecipeThree, even: Bool = true).
+forall n: Nat, r: Recipe, b: Bool.(
+	[ProvideLotInfo(n,r,b)](X(r,even))
+) &&
+[SwapIdle](X(rec, !even)) &&
+[(
+	forall n:Nat, r: Recipe, b: Bool.(
+		!ProvideLotInfo(n,r,b) &&
+		!SwapIdle &&
+		!ProjectWafer
+	)
+)](X(rec,even))&&
+[ProjectWafer]((val(rec == RecipeOne => !even)) && (val(rec == RecipeTwo => even)) && (X(rec,even)))

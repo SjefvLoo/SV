@@ -1,8 +1,9 @@
 % If a lot requires calibration: no wafer of this lot will be moved to Meas before calibration has finished.
+% In order to bound the number of wafers we limit the value n to be between 0 and 100
 
-forall n:Nat, r:Recipe.[
+[
     true*
-    .ProvideLotInfo(n, r, true)
-    .!Calibrated
+    .(exists n:Nat, r:Recipe.ProvideLotInfo(n, r, true))
+    .(!Calibrated)*
     .RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)
 ] false

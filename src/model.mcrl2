@@ -234,7 +234,7 @@ proc
 
 
     TrayInput = sProvideLotInfo(2, RecipeOne, false)
-        .sProvideLotInfo(3, RecipeTwo, false)
+        .sProvideLotInfo(3, RecipeTwo, true)
         .sProvideLotInfo(11, RecipeThree, false)
         .sTrayDone
         ;

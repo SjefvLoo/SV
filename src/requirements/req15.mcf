@@ -1,4 +1,4 @@
-% Calibration only starts if Meas and Proj contain closing wafers.
+% Closing wafers are not moved to Out or Tray.
 
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (forall p:RobotPositionT.
@@ -16,12 +16,9 @@ nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
 (val(!(ChuckMeas in C) && !(ChuckProj in C)) => [Swap]X(C)) &&
 (val(!(ChuckMeas in C) && ChuckProj in C) => [Swap]X(C-{ChuckProj}+{ChuckMeas})) &&
 (val(ChuckMeas in C && !(ChuckProj in C)) => [Swap]X(C-{ChuckMeas}+{ChuckProj})) &&
-(forall p:RobotPositionT.
+[(
     % Prune the robot x positions options that are not allowed to take place
-    val(p in allowed)  =>
-    [!(
-	    RMoveFromTo(robot(p),from(p),to(p)) ||
-	    Swap ||
-	    Finished
-)]X(C)) &&
-([Calibrate](val(C == {ChuckMeas, ChuckProj})))
+    (forall p:RobotPositionT. val(p in allowed)  => !RMoveFromTo(robot(p),from(p),to(p))) &&
+    !Swap
+)]X(C) &&
+([RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)](val(!(ChuckMeas in C))))
