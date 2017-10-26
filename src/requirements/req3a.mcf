@@ -1,7 +1,11 @@
-(forall r:Robot, p1, p2, p1prime, p2prime : Position.
+(forall p1:RobotPositionT,p2:RobotPositionT.
+    % Prune the robot x positions options that are not allowed to take place
+    % Also prune the cases where robot(p1) != robot(p2)
+    val(p1 in allowed && p2 in allowed && robot(p1) == robot(p2)) =>
+    (
     [true*
-        .RMoveFromTo(r, p1, p2)
-        .!RIdle(r, p1, p2)*
-        .RMoveFromTo(r, p1prime, p2prime)
-    ] false
+        .RMoveFromTo(robot(p1), from(p1), to(p1))
+        .!RIdle(robot(p1), from(p1), to(p1))*
+        .RMoveFromTo(robot(p1), from(p2), to(p2))
+    ] false)
 )

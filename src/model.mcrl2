@@ -4,6 +4,22 @@ sort
     Recipe = struct RecipeOne | RecipeTwo | RecipeThree;
     Robot = struct RobotOne | RobotTwo | RobotThree;
     ChuckStatus = struct Empty | Wafer | Processed | Notifying;
+    RobotPositionT = struct rpt(robot:Robot, from:Position, to:Position);
+map
+    allowed : Set(RobotPositionT);
+eqn
+    allowed = {
+        rpt(RobotOne, Tray, ChuckIn),
+        rpt(RobotOne, ChuckOut, Tray),
+        
+        rpt(RobotTwo, ChuckIn, ChuckMeas),
+        rpt(RobotTwo, ChuckEmptyOne, ChuckMeas),
+        rpt(RobotTwo, ChuckMeas, ChuckEmptyOne),
+        
+        rpt(RobotThree, ChuckMeas, ChuckOut),
+        rpt(RobotThree, ChuckEmptyTwo, ChuckMeas),
+        rpt(RobotThree, ChuckMeas, ChuckEmptyTwo)
+    };
 act
     % Lot Controller to Machine
     RMoveFromTo: Robot # Position # Position;
