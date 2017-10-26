@@ -238,7 +238,7 @@ proc
         ;
 
     TrayInputLoop(maxLots: Nat, maxWafersPerLot: Nat) =
-        TrayDone
+        sTrayDone
         + ((maxLots > 0)
             -> sum wafers:Nat
                 .((1 <= wafers && wafers <= maxWafersPerLot)
