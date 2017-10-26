@@ -96,7 +96,9 @@ proc
     MainComponent =
         rTrayDone
         .sChangeConfig(RecipeOne, false)  % Make sure chuck Meas is chuck A
+        .rChangedConfig
         .sProvideClosingWafer
+        .rProvidedClosingWafer
         .Finished
         +
         sum wafers:Nat
@@ -161,62 +163,55 @@ proc
             .Calibrate
             .Calibrated
             .sStoreClosingWafer
-            .ProjectComponent(config, chuckAAtProj, measEmpty, false)
+            .rStoredClosingWafer
+            .ProjectComponent(config, chuckAAtProj, true, false)
             <> (
                 (sum toCalibrate:Bool
                     .rChangeConfig(RecipeOne, toCalibrate)
-                    .(chuckAAtProj
-                        -> (measEmpty
+                    .(measEmpty
                             -> sProvideClosingWafer
                                 .rProvidedClosingWafer
                             <> tau
-                        )
-                        .Swap
-                        .SwapIdle
-                        <> tau
                     )
-                    .(!(measEmpty || toCalibrate)
-                        -> sStoreClosingWafer
-                            .rStoredClosingWafer
+                    .(chuckAAtProj
+                        -> 
+                        Swap
+                        .SwapIdle
                         <> tau
                     )
                     .sChangedConfig
                     .ProjectComponent(
-                        RecipeOne, false, measEmpty, toCalibrate)
+                        RecipeOne, false, false, toCalibrate)
                  )
                  + (sum toCalibrate:Bool
                     .rChangeConfig(RecipeTwo, toCalibrate)
-                    .(!chuckAAtProj
-                        -> (measEmpty
+                    .(measEmpty
                             -> sProvideClosingWafer
                                 .rProvidedClosingWafer
                             <> tau
-                        )
-                        .Swap
-                        .SwapIdle
-                        <> tau
                     )
-                    .(!(measEmpty || toCalibrate)
-                        -> sStoreClosingWafer
-                            .rStoredClosingWafer
+                    .(!chuckAAtProj
+                        -> 
+                        Swap
+                        .SwapIdle
                         <> tau
                     )
                     .sChangedConfig
                     .ProjectComponent(
-                        RecipeTwo, true, measEmpty, toCalibrate)
+                        RecipeTwo, true, false, toCalibrate)
                 )
                 + (sum toCalibrate:Bool
                     .rChangeConfig(RecipeThree, toCalibrate)
-                    .(!(measEmpty || toCalibrate)
-                        -> sStoreClosingWafer
-                            .rStoredClosingWafer
-                        <> tau
-                    )
                     .sChangedConfig
                     .ProjectComponent(
                         RecipeThree, chuckAAtProj, measEmpty, toCalibrate)
                 )
                 + rWaferReadyAtChuckIn
+                .(!measEmpty
+                    -> sStoreClosingWafer
+                        .rStoredClosingWafer
+                    <> tau
+                )
                 .RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)
                 .RIdle(RobotTwo, ChuckIn, ChuckMeas)
                 .sWaferTakenAtChuckIn
@@ -232,7 +227,7 @@ proc
                 .RIdle(RobotThree, ChuckMeas, ChuckOut)
                 .sWaferReadyAtChuckOut
                 .rWaferTakenAtChuckOut
-                .ProjectComponent(config, chuckAAtProj, measEmpty,calibrate)
+                .ProjectComponent(config, chuckAAtProj, true,calibrate)
             )
         )
         ;
