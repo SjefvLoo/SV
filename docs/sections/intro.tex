@@ -1,9 +1,16 @@
 \section{Introduction}
-\todo{Robin: This is an introduction to the assignment, we should make it an introduction to our report instead.}
-In Veldhoven you find the company ASML (\url{www.asml.com}).
-This company makes wafer scanners.
-Wafer scanners project images on silicon wafers with nano meter precision.
-This document will describe a (simplified) controller for such a scanner.
-A scanner contains multiple chucks on which the scanner does different things.
-The scanner will move each wafer from chuck to chuck in order to project images on the wafers.
-Wafers will be processed in lots in which each lot has a certain recipe.
+This document contains a simplified design for a controller that handles the processing of a lot of wafers.
+The main goal of this document is to proof that the design of the controller adheres to the requirements that have been decided on in advance.
+
+First, a textual description of the system is given, followed by a list of facts about the system. This can be found in section~\ref{sec:system_desc}.
+In section~\ref{sec:requirements} a list of requirements is given, which have been derived from the system description. These requirements are described in a natural language.
+Next, in section~\ref{sec:ext_interactions} the interactions between the external components and the controller are identified.
+In section~\ref{sec:req2int} the requirements described in section~\ref{sec:requirements} are translated into terms of these interactions.
+Using modal $\mu$-calculus the requirements are converted to modal formulas as described in section~\ref{sec:modal_formulas}.
+These modal formulas can then be used by mCRL2 to validate a designed controller.
+In section~\ref{sec:results} one can read about which requirements have been validated an which requirements have not been validated.
+
+In appendix~\ref{sec:model} one can find the model we designed and validated.
+This model has been defined in the mCRL2 format.
+Appendix~\ref{sec:mcf} provides all the modal formulas written in mcf format.
+These files can be used to validate the design using the mCRL2 tool set.

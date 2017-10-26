@@ -4,6 +4,8 @@
 \usepackage{amssymb}
 \usepackage[english]{babel}
 \usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{todonotes}
@@ -69,13 +71,14 @@
     \input{sections/ext_interactions}
     \input{sections/req2int}
     \input{sections/modal_formulas}
+    \input{sections/results}
 
     \newpage
     \appendix
-    \section{Model}
+    \section{Model}\label{sec:model}
     \lstinputlisting{../src/model.mcrl2}
 
-    \section{Requirements}
+    \section{Requirements}\label{sec:mcf}
     \subsection{Requirement 0}
     \lstinputlisting{../src/requirements/req0.mcf}
 
