@@ -12,7 +12,7 @@ if [ -z "$1" ]; then
     for file in requirements/*.mcf; do
         echo "${file}"
         lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
-            && pbes2bool "${file%.mcf}.pbes" --rewriter=jittyc
+		&& pbes2bool "${file%.mcf}.pbes" --rewriter=jittyc
     done
 else
     mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps" \
