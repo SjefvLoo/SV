@@ -1,5 +1,5 @@
 % Wafers at chuck In are pre-measured before they are moved to chuck Meas.
 
-[true* . RMoveFromTo(RobotOne, Tray, ChuckIn) . !PreMeasured
+[true* . RMoveFromTo(RobotOne, Tray, ChuckIn) . (!PreMeasured)*
     . RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)
 ] false

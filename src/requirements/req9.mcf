@@ -1,6 +1,6 @@
 % Meas and Proj will not be swapped when a measurement, projection or
 % calibration is taking place.
 
-[true* . MeasureWafer . !Measured . Swap] false
-&& [true* . ProjectWafer . !Projected . Swap] false
-&& [true* . Calibrate . !Calibrated . Swap] false
+[true* . MeasureWafer . (!Measured)* . Swap] false
+&& [true* . ProjectWafer . (!Projected)* . Swap] false
+&& [true* . Calibrate . (!Calibrated)* . Swap] false
