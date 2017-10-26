@@ -1,3 +1,7 @@
+% When Finished happen:
+% The number of RMoveFromTo(RobotOne,Tray,ChuckIn) occurrences is equal to the
+% number of RMoveFromTo(RobotOne, ChuckOut, Tray) occurrences.
+
 nu X(i:Int = 0).
 [RMoveFromTo(RobotOne,Tray,ChuckIn)]X(i+1) &&
 [RMoveFromTo(RobotOne,ChuckOut, Tray)]X(i-1) &&

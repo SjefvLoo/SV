@@ -1,1 +1,4 @@
+% The Premeasure component will only receive a PreMeasureWafer command when
+% it is idle.
+
 [true* . PreMeasureWafer . !PreMeasured* . PreMeasureWafer] false

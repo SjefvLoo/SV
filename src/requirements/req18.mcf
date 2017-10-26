@@ -1,3 +1,5 @@
+% Wafers are only moved to chuck Out when they are projected.
+
 nu X(mp: Bool = false, pp: Bool = false)
 .[Projected]X(mp, true)
 && [Swapped]X(pp, mp)
