@@ -1,8 +1,15 @@
 nu X(w : Position -> Bool = (lambda p:Position. false)[ChuckMeas -> true][ChuckProj -> true]).
-(forall r:Robot,p1,p2:Position.[RMoveFromTo(r,p2,p2)](
-	val(p1 == Tray || w(p1)) &&
-	val(p2 == Tray || !w(p2)) &&
-	X(w[p1 -> false]))
+forall p:RobotPositionT.
+    % Prune the robot x positions options that are not allowed to take place
+    val(p in allowed)  => (
+    [RMoveFromTo(robot(p),from(p),to(p))](
+        val(from(p) == Tray || w(from(p))) &&
+        val(to(p) == Tray || !w(to(p))) &&
+        X(w[from(p) -> false])
+    )
+   &&
+    [RIdle(robot(p),from(p),to(p))]X(w[to(p)->true])
 ) &&
-(forall r:Robot,p1,p2:Position.[RIdle(r,p1,p2)]X(w[p2->true])) &&
-[forall r:Robot,p1,p2:Position.!(RMoveFromTo(r,p1,p2) || RIdle(r,p1,p2))]X(w)
+[forall p:RobotPositionT.val(p in allowed)  => (
+    !RMoveFromTo(robot(p),from(p),to(p)) && !RIdle(robot(p),from(p),to(p))
+    )]X(w)

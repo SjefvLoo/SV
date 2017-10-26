@@ -95,10 +95,8 @@ act
 proc
     MainComponent =
         rTrayDone
-        .sChangeConfig(RecipeOne, false)  % Make sure chuck Meas is chuck A
+        .sChangeConfig(RecipeOne, false)  % Make sure chuck Meas is chuck A. After RecipeOne there are always 2 closing wafers at meas and proj
         .rChangedConfig
-        .sProvideClosingWafer
-        .rProvidedClosingWafer
         .Finished
         +
         sum wafers:Nat

@@ -1,0 +1,16 @@
+nu X(w : Position -> Bool = (lambda p:Position. false)[ChuckMeas -> true][ChuckProj -> true]).
+(forall p:RobotPositionT.
+    % Prune the robot x positions options that are not allowed to take place
+    val(p in allowed) => (
+        [RMoveFromTo(robot(p),from(p),to(p))](X(w[from(p) -> false]))
+        &&
+        [RIdle(robot(p), from(p),to(p))](X(w[to(p) -> true]))
+    ) &&
+    [(
+        forall p:RobotPositionT.
+        val(p in allowed) => (
+            !RMoveFromTo(robot(p), from(p), to(p)) && !RIdle(robot(p), from(p), to(p))
+        )
+    )]X(w) &&
+    [Swap](val(w(ChuckMeas) && w(ChuckProj)))
+)
