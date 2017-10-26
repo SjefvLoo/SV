@@ -1,3 +1,4 @@
+% After a RMoveFromTo occurs an RIdle must occur for the same robot before another RMoveFromTo can occur for that robot
 (forall p1:RobotPositionT,p2:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place
     % Also prune the cases where robot(p1) != robot(p2)

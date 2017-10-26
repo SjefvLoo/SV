@@ -1,0 +1,7 @@
+%Check if all RMoveFromTo and RIdle calls adhere to the allowed restriction, assume that this property holds in the verification of the other requirements.
+
+forall p:RobotPositionT.[true*.(
+    RMoveFromTo(robot(p), from(p), to(p))
+    ||
+    RIdle(robot(p), from(p), to(p))
+    )](val(p in allowed))
