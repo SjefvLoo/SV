@@ -288,12 +288,21 @@ proc
 
 init
     hide({
-%        AvailableWafers,
-%        CompletedLot,
-%        WaferReadyAtChuckIn,
-%        WaferReadyAtChuckOut,
-%        Calibrated,
-         ChangeConfig
+        AvailableWafers,
+        CompletedLot,
+
+        WaferReadyAtChuckIn,
+        WaferTakenAtChuckIn,
+        WaferReadyAtChuckOut,
+        WaferTakenAtChuckOut,
+
+        ChangeConfig,
+        ChangedConfig,
+
+        ProvideClosingWafer,
+        ProvidedClosingWafer,
+        StoreClosingWafer,
+        StoredClosingWafer
     },
     allow({
         RMoveFromTo,
