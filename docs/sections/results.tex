@@ -1,17 +1,21 @@
 \section{Verification}\label{sec:results}
-The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run. \textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean. Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite. The model can't be checked for all possibile inputs therefor the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands. \textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$. \textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times. The number of possible traces for \textit{TrayInputLoop} is $(\mathit{maxLots}+1) * 3 * \mathit{maxWafersPerLot} * 2$ (possible number of lots multiplied by the number of recipe's mutiplied by the maximum number of wafers per lot multiplied by 2 (calibrate or not)). $\mathit{maxLots} = 10$ and $\mathit{maxWafersPerLot} = 24$ are used during validation of the model.
+The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run. \textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean. Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite. The model can't be checked for all possibile inputs therefor the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands. \textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$. \textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times. The number of possible traces for \textit{TrayInputLoop} is:
+$$(\mathit{maxLots}+1) \cdot 3 \cdot \mathit{maxWafersPerLot} \cdot 2$$
+This formula represent the possible number of lots multiplied by the number of recipes multiplied by the maximum number of wafers per lot multiplied by two (i.e. whether to calibrate or not)). $\mathit{maxLots} = 10$ and $\mathit{maxWafersPerLot} = 24$ are used during validation of the model.
+
 \subsection{Execution}
 The model is verified on a machine with the following specifications:\\
 Operating system: Ubuntu 17.04\\
 Cpu: Intel(R) Pentium(R) CPU B980 @ 2.40GHz\\
 RAM: 8 GB\\
-mCRL2 toolset 201707.1 installed\\
-\\
+
+The mCRL2 toolset version "201707.1 (Release)" was used to verify the models.
+
 The following command is used to generate the \textit{lps} file:\\
 \begin{lstlisting}[frame=single,caption={mcf2lps}]
 mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps"
 \end{lstlisting}
-Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file containing the model which can be found in appendix \ref{sec:model}.\\
+Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file (without filetype suffix) containing the model which can be found in appendix \ref{sec:model}.\\
 The following command is used to verify a \textit{mcf} file:\\
 \begin{lstlisting}[frame=single,caption={mcf check}] 
 lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
