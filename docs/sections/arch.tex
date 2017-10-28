@@ -1,11 +1,11 @@
 \section{Internal architecture}
-The lot controller wil comprises of 4 subcomponents: \textit{MainComponent, IOComponent, EmptyComponent and ProjectComponent}.
+The lot controller will comprises of 4 subcomponents: \textit{MainComponent, IOComponent, EmptyComponent and ProjectComponent}.
 
 \textit{MainComponent} receives information about the lots in the tray and the need for calibration, this information is distributed to the relevant components Furthermore it makes sure that once all lots are processed that the system will go to its final state and finishes.
 
 \textit{IOComponent} is responsible for keeping robot $r_1$ busy, it places wafers onto chuck $p_{in}$ and pre-measures them whenever possible. Also whenever a wafer is at $p_{out}$ \textit{IOComponent} will place this wafer on the tray. Information about the number of wafers to take from and to place onto the tray is communicated with the \textit{MainComponent}. \textit{ProjectComponent} and \textit{IOComponent} keep each other up to date about the status of $p_{in}$ and $p_{out}$.
 
-\textit{ProjectComponent} is responsible for the measurement and projection of the wafers, wafers that are pre-measured and located a $p_{in}$ are moved by the \textit{ProjectComponent}, measured, projected and placed onto chuck $p_{out}$. \textit{ProjectComponent} is also responsible to calibrate whenever this is required. \textit{ProjectComponent} recieves information about the recipe and about the need for calibration from \textit{MainComponent}. It interacts with \textit{IOComponent} about the statues of $p_{in}$ and $p_{out}$. Furthermore it utilizes the \textit{EmptyComponent} to place or remove closing wafers.
+\textit{ProjectComponent} is responsible for the measurement and projection of the wafers, wafers that are pre-measured and located a $p_{in}$ are moved by the \textit{ProjectComponent}, measured, projected and placed onto chuck $p_{out}$. \textit{ProjectComponent} is also responsible to calibrate whenever this is required. \textit{ProjectComponent} receives information about the recipe and about the need for calibration from \textit{MainComponent}. It interacts with \textit{IOComponent} about the statues of $p_{in}$ and $p_{out}$. Furthermore it utilizes the \textit{EmptyComponent} to place or remove closing wafers.
 
 \textit{EmptyComponent} subordinates to \textit{ProjectComponent} and places or removes a closing wafer on/from $p_{meas}$ whenever desired by \textit{ProjectComponent}.\\
 

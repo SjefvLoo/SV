@@ -40,10 +40,10 @@
         If the last occurrence of $\mathit{ProvideLotInfo}(n, x, b)$ has $x$ corresponding to \recipeTwo, then $\mathit{RMoveFromTo}(r_2,p_\mathit{in},p_\mathit{meas})$ can only occur if the number of $\mathit{Swap}$ occurrences is odd.
         This holds for any number $n$ and any boolean $b$. \\
 
-    \item If $MeasureWafer$ occurs there is a wafer at positon $p_\mathit{meas}$ and this is a non-closing wafer.
-    \item If $ProjectWafer$ occurs there is a wafer at positon $p_\mathit{proj}$ and this is a non-closing wafer.
+    \item If $MeasureWafer$ occurs there is a wafer at position $p_\mathit{meas}$ and this is a non-closing wafer.
+    \item If $ProjectWafer$ occurs there is a wafer at position $p_\mathit{proj}$ and this is a non-closing wafer.
 
-    \item If $RMoveFrom(r_3,p_\mathit{meas}, p_\mathit{out})$ occurs the wafer at $p_\mathit{meas}$ is a non-closing wafer.
+    \item If $RMoveFromTo(r_3,p_\mathit{meas}, p_\mathit{out})$ occurs the wafer at $p_\mathit{meas}$ is a non-closing wafer.
 
     \item For any $n \in \mathbb{N}$ and any recipe $x$ (i.e. \recipeOne, \recipeTwo or \recipeThree) it must hold that if $\mathit{ProvideLotInfo}(n, x, \text{True})$ occurs no $\mathit{RMoveFromTo}(r_2, p_\mathit{in}, p_\mathit{meas})$ can occur until a $\mathit{Calibrated}$ has occurred.
     \item If $Calibrate$ occurs the wafers at location $p_\mathit{meas}$ and $p_\mathit{proj}$ must be closing wafers.
