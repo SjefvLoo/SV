@@ -255,14 +255,7 @@ proc
             )
         )
         ;
-
-
-    TrayInput = sProvideLotInfo(2, RecipeOne, false)
-        .sProvideLotInfo(3, RecipeTwo, true)
-        .sProvideLotInfo(11, RecipeThree, false)
-        .sTrayDone
-        ;
-
+        
     TrayInputLoop(maxLots: Nat, maxWafersPerLot: Nat) =
         sTrayDone
         + ((maxLots > 0)
@@ -341,6 +334,5 @@ init
         || IOComponent(true, 0, 0, Empty, Empty)
         || EmptyComponent(false)
         || ProjectComponent(RecipeThree, false, false, false)
-        %|| TrayInput
-        || TrayInputLoop(5, 24)
+        || TrayInputLoop(10, 24)
 )));

@@ -1,1 +1,54 @@
-\section{Results}\label{sec:results}
+\section{Verification}\label{sec:results}
+The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run. \textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean. Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite. The model can't be checked for all possibile inputs therefor the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands. \textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$. \textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times. The number of possible traces for \textit{TrayInputLoop} is $(\mathit{maxLots}+1) * 3 * \mathit{maxWafersPerLot} * 2$ (possible number of lots multiplied by the number of recipe's mutiplied by the maximum number of wafers per lot multiplied by 2 (calibrate or not)). 
+\subsection{Execution}
+The model is verified on a machine with the following specifications:\\
+Operating system: Ubuntu 17.04\\
+Cpu: Intel(R) Pentium(R) CPU B980 @ 2.40GHz\\
+RAM: 8 GB\\
+\\
+The following command is used to generate the \textit{lps} file:\\
+\begin{lstlisting}[frame=single] 
+mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps"
+\end{lstlisting}
+Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file containing the model which can be found in appendix \ref{sec:model}.\\
+The following command is used to verify a \textit{mcf} file:\\
+\begin{lstlisting}[frame=single] 
+lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
+                && pbes2bool "${file%.mcf}.pbes" --rewriter=jittyc
+\end{lstlisting}
+Where \$\{file\} refers to the mcf file containing the a modal formula which can be found in appendix \ref{sec:mcf}.\\
+\subsection{Results}
+For every modal formula described in section \ref{sec:modal_formulas} a mcf file is created, all these mcf files are checked using the commands above. The following table describes the results while $\mathit{maxLots} = 10$ and $\mathit{maxWafersPerLot} = 24$.
+\begin{table}[h]
+\label{my-label}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Modal formula} & \textbf{Result} & \textbf{Time} \\ \hline
+aux1 & true & 4m44s \\ \hline
+1 & true & 0m43s \\ \hline
+2a & true & 0m41s \\ \hline
+2b & true & 1m49s \\ \hline
+2c & true & 0m12s \\ \hline
+3a & true & 2m48s \\ \hline
+3b & true & 0m37s \\ \hline
+3c & true & 0m38s \\ \hline
+3d & true & 0m34s \\ \hline
+3e & true & 0m33s \\ \hline
+3f & true & 0m33s \\ \hline
+4 & true & 6m27s \\ \hline
+5 & true & 7m22s \\ \hline
+6 & true & 0m42s \\ \hline
+7 & true & 1m44s \\ \hline
+8 & true & 1m57s \\ \hline
+9 & true & 1m3s \\ \hline
+10 & true & 0m48s \\ \hline
+11 & true & 5m47s \\ \hline
+12 & true & 0m31s \\ \hline
+13 & true & 8m44s \\ \hline
+14 & true & 1m53s \\ \hline
+15 & true & 1m57s \\ \hline
+16 & true & 0m37s \\ \hline
+17 & true & 1m58s \\ \hline
+18 & true & 2m17s \\ \hline
+\end{tabular}
+\end{table}

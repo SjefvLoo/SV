@@ -2,14 +2,16 @@
 % another RMoveFromTo can occur for that robot.
 % Depends on aux0.
 
-(forall p1:RobotPositionT,p2:RobotPositionT.
+(forall p1:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place
-    % Also prune the cases where robot(p1) != robot(p2)
-    val(p1 in allowed && p2 in allowed && robot(p1) == robot(p2)) =>
+    val(p1 in allowed) =>
     (
-    [true*
-        .RMoveFromTo(robot(p1), from(p1), to(p1))
-        .!RIdle(robot(p1), from(p1), to(p1))*
-        .RMoveFromTo(robot(p1), from(p2), to(p2))
-    ] false)
+        [true* . 
+            RMoveFromTo(robot(p1), from(p1), to(p1)) . 
+            !RIdle(robot(p1), from(p1), to(p1))* . 
+            (exists p2:RobotPositionT.
+                 val(p2 in allowed && robot(p1) == robot(p2)) &&
+                    RMoveFromTo(robot(p1), from(p2), to(p2))
+            )
+        ] false)
 )
