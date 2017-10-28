@@ -31,6 +31,9 @@
 \newcommand{\chuckMeas}{$\mathit{Meas}$\xspace}
 \newcommand{\chuckProj}{$\mathit{Proj}$\xspace}
 
+\newcommand{\true}{\text{True}}
+\newcommand{\false}{\text{False}}
+
 
 \lstdefinelanguage{mcrl2}{
     morecomment=[l]{\%},
@@ -42,8 +45,14 @@
     morekeywords=[6]{Position,Recipe,Robot,ChuckStatus,RobotPositionT},
     sensitive=true,
 }[keywords, comments]
+\lstdefinestyle{mcrl2}{
+    breaklines=true,
+    language=mcrl2,
+    numbers=left,
+    % title=\lstname,
+}
 \lstset{
-    language=mcrl2
+    style=mcrl2,
 }
 
 \title{2IMF30 - System Validation - ASML Case Study}
