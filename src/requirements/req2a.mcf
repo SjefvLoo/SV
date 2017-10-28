@@ -2,7 +2,10 @@
 % The number of RMoveFromTo(RobotOne,Tray,ChuckIn) occurrences is equal to the
 % number of RMoveFromTo(RobotOne, ChuckOut, Tray) occurrences.
 
+% i represents the number times RMoveFromTo(RobotOne,Tray,ChuckIn) has occured
+%   minus the number of times RMoveFromTo(RobotOne,ChuckOut, Tray) has occured.
 nu X(i:Int = 0).
+    % Maintain i
     [RMoveFromTo(RobotOne,Tray,ChuckIn)]X(i+1) &&
     [RMoveFromTo(RobotOne,ChuckOut, Tray)]X(i-1) &&
     [!(
@@ -10,4 +13,6 @@ nu X(i:Int = 0).
         RMoveFromTo(RobotOne,Tray,ChuckIn) || 
         RMoveFromTo(RobotOne, ChuckOut, Tray))
     ]X(i) &&
+    
+    % Use i
     [Finished](val(i==0))

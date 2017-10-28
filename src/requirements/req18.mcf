@@ -1,7 +1,10 @@
 % Wafers are only moved to chuck Out when they are projected.
 % Depends on aux1.
 
+% mp inidcates whether the wafer at position ChuckMeas has been projected.
+% pp inidcates whether the wafer at position ChuckProj has been projected.
 nu X(mp: Bool = false, pp: Bool = false).
+    % Maintain mp and pp
     [Projected]X(mp, true) && 
     [SwapIdle]X(pp, mp) && 
     [
@@ -20,4 +23,5 @@ nu X(mp: Bool = false, pp: Bool = false).
             )
         )
     ]X(mp,pp) && 
+    % Use mp and pp
     [RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)]val(mp)

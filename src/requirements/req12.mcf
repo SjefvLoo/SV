@@ -1,7 +1,11 @@
 % A wafer from a lot is only projected if the chuck it is contained on is in
 % the recipe for its corresponding lot.
 
+% rec indicates the last recipe provided by ProvideLotInfo.
+% even indicates whether or not the number of swaps that have occures thus far
+%   is even.
 nu X(rec: Recipe = RecipeThree, even: Bool = true).
+    % Maintain rec and even
     forall n: Nat, r: Recipe, b: Bool.(
         [ProvideLotInfo(n,r,b)](X(r,even))
     ) &&
@@ -13,6 +17,7 @@ nu X(rec: Recipe = RecipeThree, even: Bool = true).
             !ProjectWafer
         )
     )](X(rec,even))&&
+    % Use rec and even
     [ProjectWafer](
         (val(rec == RecipeOne => !even)) && 
         (val(rec == RecipeTwo => even)) && 

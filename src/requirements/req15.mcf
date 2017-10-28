@@ -1,7 +1,9 @@
 % Closing wafers are not moved to Out or Tray.
 % Depends on aux1.
 
+% C represents the set of positions where the closing wafers are located
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
+    % Maintain C
     (forall p:RobotPositionT.
         % Prune the robot x positions options that are not allowed
         val(p in allowed)  => (
@@ -28,4 +30,6 @@ nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
         &&
         !Swap
     )]X(C) &&
+    
+    % Use C
     [RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)](val(!(ChuckMeas in C)))
