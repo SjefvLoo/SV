@@ -1,12 +1,12 @@
 \section{Verification}\label{sec:results}
-The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run. \textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean. Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite. The model can't be checked for all possible inputs therefor the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands. \textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$. \textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times. The number of possible traces for \textit{TrayInputLoop} is:
+The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run. \textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean. Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite. The model can't be checked for all possibile inputs therefor the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands. \textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$. \textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times. The number of possible traces for \textit{TrayInputLoop} is:
 $$(\mathit{maxLots}+1) \cdot 3 \cdot \mathit{maxWafersPerLot} \cdot 2$$
 This formula represent the possible number of lots multiplied by the number of recipes multiplied by the maximum number of wafers per lot multiplied by two (i.e. whether to calibrate or not)). $\mathit{maxLots} = 10$ and $\mathit{maxWafersPerLot} = 24$ are used during validation of the model.
 
 \subsection{Execution}
 The model is verified on a machine with the following specifications:\\
 Operating system: Ubuntu 17.04\\
-CPU: Intel(R) Pentium(R) CPU B980 @ 2.40GHz\\
+Cpu: Intel(R) Pentium(R) CPU B980 @ 2.40GHz\\
 RAM: 8 GB\\
 
 The mCRL2 toolset version "201707.1 (Release)" was used to verify the models.
@@ -15,7 +15,7 @@ The following command is used to generate the \textit{lps} file:\\
 \begin{lstlisting}[style=sh,caption={mcf2lps}] 
 mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps"
 \end{lstlisting}
-Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file (without file type suffix) containing the model which can be found in appendix \ref{sec:model}.\\
+Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file (without filetype suffix) containing the model which can be found in appendix \ref{sec:model}.\\
 The following command is used to verify an \textit{mcf} file:\\
 \begin{lstlisting}[style=sh,caption={mcf check}] 
 lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
@@ -24,39 +24,39 @@ lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
 Where \$\{file\} refers to an mcf file containing the a modal formula which can be found in appendix \ref{sec:mcf}.\\
 \subsection{Results}
 First the \text{lps} file was generated using the \text{mcf2lps} command above. Second every \textit{mcf} file is checked using the \textit{mcf check} command.
-Table \ref{tab:results10-24} below shows the results.
+Table \ref{tab:results1024} below shows the results.
 \begin{table}[!hb]
     \centering
     \begin{tabular}{|l|l|l|}
         \hline
         \textbf{Mcf} & \textbf{Result} & \textbf{Execution Time} \\ \hline
-        Auxiliary 1 & true & 4m44s \\ \hline
-        Requirement 1 & true & 0m43s \\ \hline
-        Requirement 2a & true & 0m41s \\ \hline
-        Requirement 2b & true & 1m49s \\ \hline
-        Requirement 2c & true & 0m12s \\ \hline
-        Requirement 3a & true & 2m48s \\ \hline
-        Requirement 3b & true & 0m37s \\ \hline
-        Requirement 3c & true & 0m38s \\ \hline
-        Requirement 3d & true & 0m34s \\ \hline
-        Requirement 3e & true & 0m33s \\ \hline
-        Requirement 3f & true & 0m33s \\ \hline
-        Requirement 4 & true & 4m04s \\ \hline
-        Requirement 5 & true & 7m22s \\ \hline
-        Requirement 6 & true & 0m42s \\ \hline
-        Requirement 7 & true & 1m44s \\ \hline
-        Requirement 8 & true & 1m57s \\ \hline
-        Requirement 9 & true & 1m03s \\ \hline
-        Requirement 10 & true & 0m48s \\ \hline
-        Requirement 11 & true & 3m51s \\ \hline
-        Requirement 12 & true & 0m31s \\ \hline
-        Requirement 13 & true & 8m31s \\ \hline
-        Requirement 14 & true & 1m53s \\ \hline
-        Requirement 15 & true & 1m57s \\ \hline
-        Requirement 16 & true & 0m37s \\ \hline
-        Requirement 17 & true & 1m58s \\ \hline
-        Requirement 18 & true & 2m17s \\ \hline
+			Auxilary 1 & true & 4m44s \\ \hline
+			Requirement 1 & true & 0m43s \\ \hline
+			Requirement 2a & true & 0m41s \\ \hline
+			Requirement 2b & true & 1m49s \\ \hline
+			Requirement 2c & true & 0m12s \\ \hline
+			Requirement 3a & true & 2m48s \\ \hline
+			Requirement 3b & true & 0m37s \\ \hline
+			Requirement 3c & true & 0m38s \\ \hline
+			Requirement 3d & true & 0m34s \\ \hline
+			Requirement 3e & true & 0m33s \\ \hline
+			Requirement 3f & true & 0m33s \\ \hline
+			Requirement 4 & true & 4m04s \\ \hline
+			Requirement 5 & true & 7m22s \\ \hline
+			Requirement 6 & true & 0m42s \\ \hline
+			Requirement 7 & true & 1m44s \\ \hline
+			Requirement 8 & true & 1m57s \\ \hline
+			Requirement 9 & true & 1m03s \\ \hline
+			Requirement 10 & true & 0m48s \\ \hline
+			Requirement 11 & true & 3m51s \\ \hline
+			Requirement 12 & true & 0m31s \\ \hline
+			Requirement 13 & true & 8m31s \\ \hline
+			Requirement 14 & true & 1m53s \\ \hline
+			Requirement 15 & true & 1m57s \\ \hline
+			Requirement 16 & true & 0m37s \\ \hline
+			Requirement 17 & true & 1m58s \\ \hline
+			Requirement 18 & true & 2m17s \\ \hline
     \end{tabular}
     \caption{Results for at most ten lots and at most 24 wafers per lot}
-    \label{tab:results10-24}
+    \label{tab:results1024}
 \end{table}

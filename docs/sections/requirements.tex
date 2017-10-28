@@ -14,7 +14,7 @@ The requirements for the lot controller are as follows:
             \item \chuckIn and \chuckOut contain no wafer.
         \end{enumerate}
     \item The pre-measurement, measurement, image projection, calibration, robot and swap components will only receive a command when that component is idle.
-    \item \robotOne, \robotTwo and \robotThree will only receive a command to move a wafer from the source chuck to the destination chuck if the source chuck contains a wafer and the destination chuck does not contain a wafer.\todo{Maybe reformulate.}
+    \item \robotOne, \robotTwo and \robotThree will only receive a command to move a wafer from the source chuck to the destination chuck if the source chuck contains a wafer and the destination chuck does not contain a wafer.
     \item A chuck will never contain more than 1 wafer.
     \item Wafers at chuck \chuckIn are pre-measured before they are moved to chuck \chuckMeas.
     \item Wafers that are being projected have been measured at \chuckMeas.
