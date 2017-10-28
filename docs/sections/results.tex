@@ -16,7 +16,7 @@ The following command is used to generate the \textit{lps} file:\\
 mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps"
 \end{lstlisting}
 Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file (without filetype suffix) containing the model which can be found in appendix \ref{sec:model}.\\
-The following command is used to verify a \textit{mcf} file:\\
+The following command is used to verify an \textit{mcf} file:\\
 \begin{lstlisting}[style=sh,caption={mcf check}] 
 lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
                 && pbes2bool "${file%.mcf}.pbes" --rewriter=jittyc
