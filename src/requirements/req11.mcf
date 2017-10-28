@@ -1,5 +1,5 @@
 % Swap can only take place when both meas and proj contain a wafer. 
-% Depends on aux0.
+% Depends on aux1.
 
 nu X(w : Position -> Bool = (lambda p:Position. false)
                                 [ChuckMeas -> true]

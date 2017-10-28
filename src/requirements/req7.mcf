@@ -1,5 +1,5 @@
 % Wafers that are being projected have been measured at Meas.
-% Depends on aux0.
+% Depends on aux1.
 
 nu X(mm: Bool = false, pm: Bool = false).
     [Measured]X(true, pm) &&

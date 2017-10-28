@@ -1,5 +1,5 @@
 % Projection only takes place when a non-closing wafer is at Proj.
-% Depends on aux0.
+% Depends on aux1.
 
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
     (forall p:RobotPositionT.

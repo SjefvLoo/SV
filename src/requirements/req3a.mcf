@@ -1,6 +1,6 @@
 % After a RMoveFromTo occurs an RIdle must occur for the same robot before
 % another RMoveFromTo can occur for that robot.
-% Depends on aux0.
+% Depends on aux1.
 
 (forall p1:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place

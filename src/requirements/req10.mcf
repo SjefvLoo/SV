@@ -1,5 +1,5 @@
 %Wafers will not be moved from Meas position during measurement or calibration.
-%Depends on aux0
+%Depends on aux1
 
 [true* . MeasureWafer . (!Measured)* 
     .(exists p: RobotPositionT. 

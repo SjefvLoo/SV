@@ -1,6 +1,6 @@
 % When Finished happens:
 % Meas and Proj contain a closing wafer.
-% Depends on aux0.
+% Depends on aux1.
 
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
     (forall p:RobotPositionT.

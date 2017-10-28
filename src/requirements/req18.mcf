@@ -1,5 +1,5 @@
 % Wafers are only moved to chuck Out when they are projected.
-% Depends on aux0.
+% Depends on aux1.
 
 nu X(mp: Bool = false, pp: Bool = false).
     [Projected]X(mp, true) && 
