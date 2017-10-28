@@ -42,8 +42,19 @@
     morekeywords=[6]{Position,Recipe,Robot,ChuckStatus,RobotPositionT},
     sensitive=true,
 }[keywords, comments]
+\lstdefinestyle{mcrl2}{
+    breaklines=true,
+    language=mcrl2,
+    numbers=left,
+    % title=\lstname,
+}
+\lstdefinestyle{sh}{
+    frame=single,
+    language=sh,
+    numbers=none,
+}
 \lstset{
-    language=mcrl2
+    style=mcrl2,
 }
 
 \title{2IMF30 - System Validation - ASML Case Study}
@@ -157,7 +168,7 @@
     \subsection{Requirement 18}
     \lstinputlisting{../src/requirements/req18.mcf}
     
-    \subsection{Auxilary 1}
+    \subsection{Auxilary 1}\label{sec:aux1}
     \lstinputlisting{../src/requirements/reqaux1.mcf}
 
 \end{document}
