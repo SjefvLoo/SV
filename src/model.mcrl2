@@ -344,5 +344,5 @@ init
         || EmptyComponent(false)
         || ProjectComponent(RecipeThree, false, false, false)
         %|| TrayInput
-        || TrayInputLoop(5, 5)
+        || TrayInputLoop(5, 24)
 )));
