@@ -1,6 +1,23 @@
 % Wafers are only moved to chuck Out when they are projected.
+% Depends on aux0.
 
 nu X(mp: Bool = false, pp: Bool = false).
-[Projected]X(mp, true)
-&& [SwapIdle]X(pp, true)
-&& [RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)](val(mp) && X(false, pp))
+    [Projected]X(mp, true) && 
+    [SwapIdle]X(pp, mp) && 
+    [
+        (exists p:RobotPositionT.
+            val(p in allowed && from(p) == ChuckMeas) && (
+                RMoveFromTo(robot(p), from(p), to(p))
+            )
+        )
+    ]X(false, pp) && 
+    [
+        !Projected &&
+        !SwapIdle &&
+        (forall p:RobotPositionT.
+            val(p in allowed && from(p) == ChuckMeas)  =>(
+                !RMoveFromTo(robot(p), from(p), to(p))
+            )
+        )
+    ]X(mp,pp) && 
+    [RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)]val(mp)

@@ -1,19 +1,22 @@
 % RobotOne, RobotTwo and RobotThree will only receive a command to move a
 % wafer from the source chuck to the destination chuck if the source chuck
 % contains a wafer and the destination chuck does not contain a wafer.
+% Depends on aux0.
 
-nu X(w : Position -> Bool = (lambda p:Position. false)[ChuckMeas -> true][ChuckProj -> true]).
-forall p:RobotPositionT.
-    % Prune the robot x positions options that are not allowed to take place
-    val(p in allowed)  => (
-    [RMoveFromTo(robot(p),from(p),to(p))](
-        val(from(p) == Tray || w(from(p))) &&
-        val(to(p) == Tray || !w(to(p))) &&
-        X(w[from(p) -> false])
-    )
-   &&
-    [RIdle(robot(p),from(p),to(p))]X(w[to(p)->true])
-) &&
-[forall p:RobotPositionT.val(p in allowed)  => (
-    !RMoveFromTo(robot(p),from(p),to(p)) && !RIdle(robot(p),from(p),to(p))
+nu X(w : Position -> Bool = (lambda p:Position. false)
+                                [ChuckMeas -> true]
+                                [ChuckProj -> true]).
+    forall p:RobotPositionT.
+        % Prune the robot x positions options that are not
+        val(p in allowed)  => (
+            [RMoveFromTo(robot(p),from(p),to(p))](
+                val(from(p) == Tray || w(from(p))) &&
+                val(to(p) == Tray || !w(to(p))) &&
+                X(w[from(p) -> false])
+            )
+           &&
+           [RIdle(robot(p),from(p),to(p))]X(w[to(p)->true])
+    ) &&
+    [forall p:RobotPositionT.val(p in allowed)  => (
+        !RMoveFromTo(robot(p),from(p),to(p)) && !RIdle(robot(p),from(p),to(p))
     )]X(w)

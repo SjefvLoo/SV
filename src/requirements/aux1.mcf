@@ -1,0 +1,11 @@
+%Check if all RMoveFromTo and RIdle calls adhere to the allowed restriction
+
+[true*.(
+    exists p:RobotPositionT.
+        (!val(p in allowed)) &&
+        (
+            RMoveFromTo(robot(p), from(p), to(p))
+            ||
+            RIdle(robot(p), from(p), to(p))
+        )
+)]false

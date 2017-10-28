@@ -3,7 +3,11 @@
 % number of RMoveFromTo(RobotOne, ChuckOut, Tray) occurrences.
 
 nu X(i:Int = 0).
-[RMoveFromTo(RobotOne,Tray,ChuckIn)]X(i+1) &&
-[RMoveFromTo(RobotOne,ChuckOut, Tray)]X(i-1) &&
-[!(Finished || RMoveFromTo(RobotOne,Tray,ChuckIn) || RMoveFromTo(RobotOne, ChuckOut, Tray))]X(i) &&
-[Finished](val(i==0))
+    [RMoveFromTo(RobotOne,Tray,ChuckIn)]X(i+1) &&
+    [RMoveFromTo(RobotOne,ChuckOut, Tray)]X(i-1) &&
+    [!(
+        Finished || 
+        RMoveFromTo(RobotOne,Tray,ChuckIn) || 
+        RMoveFromTo(RobotOne, ChuckOut, Tray))
+    ]X(i) &&
+    [Finished](val(i==0))

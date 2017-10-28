@@ -95,7 +95,9 @@ act
 proc
     MainComponent =
         rTrayDone
-        .sChangeConfig(RecipeOne, false)  % Make sure chuck Meas is chuck A. After RecipeOne there are always 2 closing wafers at meas and proj
+        % Make sure chuck Meas is chuck A. 
+        % After RecipeOne there are always 2 closing wafers at meas and proj
+        .sChangeConfig(RecipeOne, false)  
         .rChangedConfig
         .Finished
         +
@@ -111,18 +113,44 @@ proc
         ;
 
 
-    IOComponent(idle: Bool, wtake: Nat, wplace: Nat, cin:ChuckStatus, cout:ChuckStatus) =
-        ((idle) -> sum n:Nat. rAvailableWafers(n) . IOComponent((n==0), n, n, cin, cout)) +
-        ((!idle && wplace == 0) -> sCompletedLot . IOComponent(true, wtake, wplace, cin, cout)) +
+    IOComponent(
+        idle: Bool, 
+        wtake: Nat, 
+        wplace: Nat, 
+        cin:ChuckStatus, 
+        cout:ChuckStatus
+    ) =
+        ((idle) -> 
+            sum n:Nat. rAvailableWafers(n) . 
+            IOComponent((n==0), n, n, cin, cout)) +
+        ((!idle && wplace == 0) -> 
+            sCompletedLot . 
+            IOComponent(true, wtake, wplace, cin, cout)) +
         (!idle) -> (
-            ((cin == Empty && wtake > 0) -> RMoveFromTo(RobotOne, Tray, ChuckIn) . RIdle(RobotOne, Tray, ChuckIn) . IOComponent(idle, Int2Nat(wtake -1), wplace, Wafer, cout)) +
-            ((cin == Wafer) -> PreMeasureWafer . PreMeasured . IOComponent(idle, wtake, wplace, Processed, cout)) +
-            ((cin == Processed) -> sWaferReadyAtChuckIn . IOComponent(idle, wtake, wplace, Notifying, cout)) +
-            ((cin == Notifying) -> rWaferTakenAtChuckIn . IOComponent(idle, wtake, wplace, Empty, cout)) +
+            ((cin == Empty && wtake > 0) -> 
+                RMoveFromTo(RobotOne, Tray, ChuckIn) . 
+                RIdle(RobotOne, Tray, ChuckIn) . 
+                IOComponent(idle, Int2Nat(wtake -1), wplace, Wafer, cout)) +
+            ((cin == Wafer) -> 
+                PreMeasureWafer . PreMeasured . 
+                IOComponent(idle, wtake, wplace, Processed, cout)) +
+            ((cin == Processed) -> 
+                sWaferReadyAtChuckIn . 
+                IOComponent(idle, wtake, wplace, Notifying, cout)) +
+            ((cin == Notifying) -> 
+                rWaferTakenAtChuckIn . 
+                IOComponent(idle, wtake, wplace, Empty, cout)) +
 
-            ((cout == Wafer && wplace > 0) -> RMoveFromTo(RobotOne, ChuckOut, Tray) . RIdle(RobotOne, ChuckOut, Tray) . IOComponent(idle, wtake, wplace, cin, Notifying)) +
-            ((cout == Empty) -> rWaferReadyAtChuckOut . IOComponent(idle, wtake, wplace, cin, Wafer)) +
-            ((cout == Notifying) -> sWaferTakenAtChuckOut . IOComponent(idle, wtake, Int2Nat(wplace - 1), cin, Empty))
+            ((cout == Wafer && wplace > 0) -> 
+                RMoveFromTo(RobotOne, ChuckOut, Tray) . 
+                RIdle(RobotOne, ChuckOut, Tray) . 
+                IOComponent(idle, wtake, wplace, cin, Notifying)) +
+            ((cout == Empty) -> 
+                rWaferReadyAtChuckOut . 
+                IOComponent(idle, wtake, wplace, cin, Wafer)) +
+            ((cout == Notifying) -> 
+                sWaferTakenAtChuckOut . 
+                IOComponent(idle, wtake, Int2Nat(wplace - 1), cin, Empty))
         )
         ;
 
@@ -252,12 +280,19 @@ proc
 
 init
     hide({
-%        AvailableWafers,
-%        CompletedLot,
-%        WaferReadyAtChuckIn,
-%        WaferReadyAtChuckOut,
-%        Calibrated,
-         ChangeConfig
+        TrayDone,
+        AvailableWafers,
+        CompletedLot,
+        WaferTakenAtChuckIn,
+        WaferReadyAtChuckIn,
+        WaferTakenAtChuckOut,
+        WaferReadyAtChuckOut,
+        ChangeConfig,
+        ChangedConfig,
+        ProvideClosingWafer,
+        ProvidedClosingWafer,
+        StoreClosingWafer,
+        StoredClosingWafer
     },
     allow({
         RMoveFromTo,

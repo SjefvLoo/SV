@@ -1,24 +1,33 @@
 % Only closing wafers can be placed on EmptyOne and EmptyTwo.
+% Depends on aux0.
 
 nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
-(forall p:RobotPositionT.
-    % Prune the robot x positions options that are not allowed to take place
-    val(p in allowed)  =>
-	[RMoveFromTo(robot(p),from(p),to(p))](
-		val(from(p) in C) => X(C-{from(p)}+{to(p)})
-	)
+    (forall p:RobotPositionT.
+        % Prune the robot x positions options that are not allowed to take place
+        val(p in allowed)  => (
+            [RMoveFromTo(robot(p),from(p),to(p))](
+                val(from(p) in C) => X(C-{from(p)}+{to(p)})
+            )
+            &&
+            [RMoveFromTo(robot(p),from(p),to(p))](
+                val(!(from(p) in C)) => X(C)
+            )
+        )
+    )
     &&
-	[RMoveFromTo(robot(p),from(p),to(p))](
-		val(!(from(p) in C)) => X(C)
-	))
-&&
-(val(ChuckMeas in C && ChuckProj in C) => [Swap]X(C)) &&
-(val(!(ChuckMeas in C) && !(ChuckProj in C)) => [Swap]X(C)) &&
-(val(!(ChuckMeas in C) && ChuckProj in C) => [Swap]X(C-{ChuckProj}+{ChuckMeas})) &&
-(val(ChuckMeas in C && !(ChuckProj in C)) => [Swap]X(C-{ChuckMeas}+{ChuckProj})) &&
-[(
-    % Prune the robot x positions options that are not allowed to take place
-    (forall p:RobotPositionT. val(p in allowed)  => !RMoveFromTo(robot(p),from(p),to(p))) &&
-    !Swap
-)]X(C) &&
-[RMoveFromTo(RobotTwo, ChuckMeas, ChuckEmptyOne) || RMoveFromTo(RobotThree, ChuckMeas, ChuckEmptyTwo)](val(ChuckMeas in C))
+    (val(ChuckMeas in C && ChuckProj in C) => [Swap]X(C)) &&
+    (val(!(ChuckMeas in C) && !(ChuckProj in C)) => [Swap]X(C)) &&
+    (val(!(ChuckMeas in C) && ChuckProj in C) => 
+        [Swap]X(C-{ChuckProj}+{ChuckMeas})) &&
+    (val(ChuckMeas in C && !(ChuckProj in C)) => 
+        [Swap]X(C-{ChuckMeas}+{ChuckProj})) &&
+    [(
+        % Prune the robot x positions options that are not allowed
+        (forall p:RobotPositionT. 
+            val(p in allowed)  => !RMoveFromTo(robot(p),from(p),to(p))) &&
+        !Swap
+    )]X(C) &&
+    [
+        RMoveFromTo(RobotTwo, ChuckMeas, ChuckEmptyOne) ||
+        RMoveFromTo(RobotThree, ChuckMeas, ChuckEmptyTwo)
+    ](val(ChuckMeas in C))

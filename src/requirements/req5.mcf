@@ -1,4 +1,5 @@
 % A chuck will never contain more than 1 wafer.
+% Depends on aux0.
 
 forall p1:RobotPositionT,p2:RobotPositionT .(
     (
