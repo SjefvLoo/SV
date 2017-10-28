@@ -101,9 +101,7 @@ proc
         .rChangedConfig
         .Finished
         +
-        sum wafers:Nat
-        .sum recipe:Recipe
-        .sum calibrate:Bool
+        sum wafers:Nat, recipe:Recipe, calibrate:Bool
         .rProvideLotInfo(wafers, recipe, calibrate)
         .sChangeConfig(recipe, calibrate)
         .rChangedConfig
