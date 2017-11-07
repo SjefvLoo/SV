@@ -315,7 +315,7 @@ init
         StoredClosingWafer
     },
     comm({
-        sTrayDone             | rTrayDone             -> TrayDone,
+        rTrayDone             | sTrayDone             -> TrayDone,
         rAvailableWafers      | sAvailableWafers      -> AvailableWafers,
         rCompletedLot         | sCompletedLot         -> CompletedLot,
         rWaferTakenAtChuckIn  | sWaferTakenAtChuckIn  -> WaferTakenAtChuckIn,
