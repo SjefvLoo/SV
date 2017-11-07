@@ -1,5 +1,5 @@
-\section{Internal architecture}
-The lot controller consists of 4 subcomponents: \textit{MainComponent, IOComponent, EmptyComponent and ProjectComponent}.
+\section{Internal Architecture}
+The lot controller consists of four internal components, namely \textit{MainComponent}, \textit{IOComponent}, \textit{EmptyComponent} and \textit{ProjectComponent}.
 
 \textit{MainComponent} receives information about the lots in the tray and the need for calibration.
 This information is distributed to the relevant components.
@@ -25,10 +25,19 @@ Furthermore it utilizes the \textit{EmptyComponent} to place or remove closing w
     \caption{Internal architecture}
     \label{fig:internal_arch}
 \end{figure}
-Figure \ref{fig:internal_arch} shows the different internal components as well as the interactions they perform with external systems. 
+Figure~\ref{fig:internal_arch} shows the different internal components as well as the interactions they perform with external systems. 
 
-\subsection{Internal interactions}
-Besides the external interactions the system utilizes internal interactions to communicate between the different internal components.
+\subsection{Internal Interactions}
+The four internal components will run as parallel processes.
+These processes need a way to communicate with each other.
+When communication takes place, one process will send information to another process which receives that information.
+These send and receive actions need to take place simultaneously.
+Such a multi-action can also be described as a single communication action.
+The text below describes the communication actions between two components.
+Each first mentioned component will send the information, whereas the second mentioned component will receive the sent information.
+In our mCRL2~model (see Appendix~\ref{sec:model}) a send action is prefixed by an `s' and a receive action is prefixed by an `r'.
+The allowed actions are all external interactions and communication actions.
+All communication actions listed below cannot be observed by the outside world and thus can be hidden using the internal $\tau$-action.
 
 \textbf{MainComponent to IOComponent:}
 \begin{itemize}
