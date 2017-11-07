@@ -1,8 +1,8 @@
 % Wafers that are being projected have been measured at Meas.
 % Depends on aux1.
 
-% mm inidcates whether the wafer at position ChuckMeas has been measured.
-% pm inidcates whether the wafer at position ChuckProj has been measured.
+% mm indicates whether the wafer at position ChuckMeas has been measured.
+% pm indicates whether the wafer at position ChuckProj has been measured.
 nu X(mm: Bool = false, pm: Bool = false).
     % Maintain mm and pm
     [Measured]X(true, pm) &&
