@@ -5,7 +5,7 @@
 
     \item When $\mathit{Finished}$ happens:
     \begin{enumerate}
-        \item The number of $\mathit{RMoveFromTo}(r_1, p_\mathit{tray}, p_\mathit{in})$ occurrences is equal to the number of \\$\mathit{RMoveFromTo}(r_1, p_\mathit{out}, p_\mathit{tray})$ occurrences;
+        \item The number of action $\mathit{RMoveFromTo}(r_1, p_\mathit{tray}, p_\mathit{in})$ occurrences is equal to the number of action \\$\mathit{RMoveFromTo}(r_1, p_\mathit{out}, p_\mathit{tray})$ occurrences;
         \item \chuckMeas and \chuckProj contain a closing wafer.
         \item Follows from a and b.
     \end{enumerate}
@@ -19,20 +19,27 @@
         \item After $\mathit{Calibrate}$ no $\mathit{Calibrate}$ will occur until $\mathit{Calibrated}$ occurs.
     \end{enumerate}
 
-    \item For any $RMoveFromTo(r, p_1, p_2)$ will only occur if $p_1 \approx p_\mathit{tray}$ or $p_1$ contains a wafer and $p_2 \approx p_\mathit{tray}$ or $p_2$ does not contain a wafer. Holds for any $r \in R$ and $p_1,p_2 \in P$.
-    \item After $RIdle(r, p_1, p_2)$ no $RIdle(r', p_1', p_2)$ can't occur until a $RMoveFromTo(r'',p_2,p_3)$ occurs. Hold for any $r, r',r''\in R$, $p_1,p_1',p_2,p_3 \in P \wedge p_2 \neq p_\mathit{tray}$.
+    \item The action $RMoveFromTo(r, p_1, p_2)$ will only occur if $p_1 \approx p_\mathit{tray}$ or $p_1$ contains a wafer and $p_2 \approx p_\mathit{tray}$ or $p_2$ does not contain a wafer.
+    Holds for any $r \in R$ and $p_1,p_2 \in P$.
+
+    \item After $\mathit{RIdle}(r, p_1, p_2)$ no $\mathit{RIdle}(r', p_1', p_2)$ can occur until a $\mathit{RMoveFromTo}(r'',p_2,p_3)$ occurs.
+    Holds for any $r,r',r''\in R$ and $p_1,p_1',p_2,p_3 \in P \wedge p_2 \neq p_\mathit{tray}$.
 
     \item Between every $\mathit{RMoveFromTo}(r_1, p_\mathit{tray},p_\mathit{in})$ and $\mathit{RMoveFromTo}(r_2, p_\mathit{in}, p_\mathit{meas})$ a $\mathit{PreMeasured}$ must occur.
 
-    \item When $Project$ occurs the wafer at $p_\mathit{proj}$ has been measured.
+    \item When $\mathit{Project}$ occurs the wafer at $p_\mathit{proj}$ has been measured.
 
-    \item When $RMoveFromTo(r, p_1, p_2)$ occurs the wafer at $p_1$ is a closing wafer. This holds for $r \in R$, $p_1 \in P$ and $p_2 \in \{p_\textit{empty1}, p_\textit{empty2}\}$.
+    \item When $\mathit{RMoveFromTo}(r, p_1, p_2)$ occurs the wafer at $p_1$ is a closing wafer.
+    This holds for $r \in R$, $p_1 \in P$ and $p_2 \in \{p_\textit{empty1}, p_\textit{empty2}\}$.
     
-    \item Between $MeasureWafer$ and $Measured$ no $Swap$ will occur. Between $ProjectWafer$ and $Projected$ no $Swap$ will occur. Between $Calibrate$ and $Calibrated$ no $Swap$ will occur.
+    \item Between $\mathit{MeasureWafer}$ and $\mathit{Measured}$ no $\mathit{Swap}$ will occur.
+    Between $\mathit{ProjectWafer}$ and $\mathit{Projected}$ no $\mathit{Swap}$ will occur.
+    Between $\mathit{Calibrate}$ and $\mathit{Calibrated}$ no $\mathit{Swap}$ will occur.
 
-    \item Between $MeasureWafer$ and $Measured$ no $RMoveFromTo(r, p_\mathit{meas}, p_2)$ will occur and between $Calibrate$ and $Calibrated$ no $RMoveFromTo(r, p_\mathit{meas}, p_2)$ will occur. This holds for any $r \in R, p_2 \in P$
+    \item Between $\mathit{MeasureWafer}$ and $\mathit{Measured}$ no $\mathit{RMoveFromTo}(r, p_\mathit{meas}, p_2)$ will occur and between $\mathit{Calibrate}$ and $\mathit{Calibrated}$ no $\mathit{RMoveFromTo}(r, p_\mathit{meas}, p_2)$ will occur.
+    This holds for any $r \in R$ and $p_2 \in P$.
     
-    \item If $Swap$ occurs, there is a wafer at $p_\mathit{meas}$ and at $p_\mathit{proj}$.
+    \item If $\mathit{Swap}$ occurs, there is a wafer at $p_\mathit{meas}$ and at $p_\mathit{proj}$.
 
     \item Let $b$ be a boolean, $n \in N$ and $x$ a recipe.  \\
         If the last occurrence of $\mathit{ProvideLotInfo}(n, x, b)$ has $x$ corresponding to \recipeOne, then $\mathit{RMoveFromTo}(r_2,p_\mathit{in},p_\mathit{meas})$ can only occur if the number of $\mathit{Swap}$ occurrences is even.
@@ -40,12 +47,15 @@
         If the last occurrence of $\mathit{ProvideLotInfo}(n, x, b)$ has $x$ corresponding to \recipeTwo, then $\mathit{RMoveFromTo}(r_2,p_\mathit{in},p_\mathit{meas})$ can only occur if the number of $\mathit{Swap}$ occurrences is odd.
         This holds for any number $n$ and any boolean $b$. \\
 
-    \item If $MeasureWafer$ occurs there is a wafer at position $p_\mathit{meas}$ and this is a non-closing wafer.
-    \item If $ProjectWafer$ occurs there is a wafer at position $p_\mathit{proj}$ and this is a non-closing wafer.
+    \item If $\mathit{MeasureWafer}$ occurs there is a wafer at position $p_\mathit{meas}$ and this is a non-closing wafer.
 
-    \item If $RMoveFromTo(r_3,p_\mathit{meas}, p_\mathit{out})$ occurs the wafer at $p_\mathit{meas}$ is a non-closing wafer.
+    \item If $\mathit{ProjectWafer}$ occurs there is a wafer at position $p_\mathit{proj}$ and this is a non-closing wafer.
 
-    \item For any $n \in \mathbb{N}$ and any recipe $x$ (i.e. \recipeOne, \recipeTwo or \recipeThree) it must hold that if $\mathit{ProvideLotInfo}(n, x, \text{True})$ occurs no $\mathit{RMoveFromTo}(r_2, p_\mathit{in}, p_\mathit{meas})$ can occur until a $\mathit{Calibrated}$ has occurred.
-    \item If $Calibrate$ occurs the wafers at location $p_\mathit{meas}$ and $p_\mathit{proj}$ must be closing wafers.
+    \item If $\mathit{RMoveFromTo}(r_3,p_\mathit{meas}, p_\mathit{out})$ occurs the wafer at $p_\mathit{meas}$ is a non-closing wafer.
+
+    \item For any $n \in \mathbb{N}$ and any recipe $x$ (i.e.\ \recipeOne, \recipeTwo or \recipeThree) it must hold that if $\mathit{ProvideLotInfo}(n, x, \text{True})$ occurs no $\mathit{RMoveFromTo}(r_2, p_\mathit{in}, p_\mathit{meas})$ can occur until a $\mathit{Calibrated}$ has occurred.
+
+    \item If $\mathit{Calibrate}$ occurs the wafers at location $p_\mathit{meas}$ and $p_\mathit{proj}$ must be closing wafers.
+
     \item If $\mathit{RMoveFromTo}\left(r_2, p_\mathit{meas}, p_\mathit{out}\right)$ occurs the wafer at position $p_\mathit{meas}$ must be projected.
 \end{enumerate}

@@ -15,16 +15,20 @@ Let $Q$ be the set of recipes: $Q = \{Recipe_1, Recipe_2, Recipe_3\}$.
         Request robot $r$ to move the wafer that is located at position $p_1$ to position $p_2$ where $r \in R$ and $p_1, p_2 \in P$.
         For these movements there is a set of legal argument combinations that are accepted, all other argument combinations are not accepted.
         Only the following argument combinations are accepted:
-        \begin{align*}
-            M = \{ & \left(r_1, p_\mathit{tray},   p_\mathit{in}     \right), \\
-                   & \left(r_1, p_\mathit{out},    p_\mathit{tray}   \right), \\
-                   & \left(r_2, p_\mathit{in},     p_\mathit{meas}   \right), \\
-                   & \left(r_2, p_\mathit{meas},   p_\mathit{empty1} \right), \\
-                   & \left(r_2, p_\mathit{empty1}, p_\mathit{meas}   \right), \\
-                   & \left(r_3, p_\mathit{empty2}, p_\mathit{meas}   \right), \\
-                   & \left(r_3, p_\mathit{meas},   p_\mathit{empty2} \right), \\
-                   & \left(r_3, p_\mathit{meas},   p_\mathit{out}    \right)\} \\
-        \end{align*}
+        \begin{equation}\label{eq:valid-moves}
+            \begin{split}
+                M = \left\{\vphantom{\left(p_\mathit{tray}\right)}\right.
+                    & \left(r_1, p_\mathit{tray},   p_\mathit{in}     \right), \\
+                    & \left(r_1, p_\mathit{out},    p_\mathit{tray}   \right), \\
+                    & \left(r_2, p_\mathit{in},     p_\mathit{meas}   \right), \\
+                    & \left(r_2, p_\mathit{meas},   p_\mathit{empty1} \right), \\
+                    & \left(r_2, p_\mathit{empty1}, p_\mathit{meas}   \right), \\
+                    & \left(r_3, p_\mathit{empty2}, p_\mathit{meas}   \right), \\
+                    & \left(r_3, p_\mathit{meas},   p_\mathit{empty2} \right), \\
+                    & \left(r_3, p_\mathit{meas},   p_\mathit{out}    \right)
+                        \left.\vphantom{\left(p_\mathit{tray}\right)}\right\} \\
+            \end{split}
+        \end{equation}
 
     \item $\mathit{Calibrate}$ \\
     Request calibration to be performed.
@@ -46,7 +50,7 @@ Let $Q$ be the set of recipes: $Q = \{Recipe_1, Recipe_2, Recipe_3\}$.
 \begin{itemize}
     \item $\mathit{ProvideLotInfo}(n, r, b)$ \\
     Provide the lot controller with info about the current lot in the \tray.
-    When $n$ equals the amount of wafers in the lot, $r$ indicates the recipe (i.e. \recipeOne, \recipeTwo or \recipeThree) and $b$ indicates the need for calibration.
+    When $n$ equals the amount of wafers in the lot, $r$ indicates the recipe (i.e.\ \recipeOne, \recipeTwo or \recipeThree) and $b$ indicates the need for calibration.
     When $b$ is $\text{True}$, the system needs to be calibrated before the lot is processed.
     When $b$ is $\text{False}$ no calibration is needed.
     This does not change any observational variables.
