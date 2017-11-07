@@ -1,5 +1,11 @@
 \section{Verification}\label{sec:results}
-The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run. \textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean. Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite. The model can't be checked for all possibile inputs therefor the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands. \textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$. \textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times. The number of possible traces for \textit{TrayInputLoop} is:
+The lot controller requires information about the lots on the tray through \textit{ProvideLotInfo} to run.
+\textit{ProvideLotInfo} takes 3 arguments: a natural number, a recipe and a boolean.
+Furthermore \textit{ProvideLotInfo} represents a single lot, the only restriction to the number of lots is that it is finite.
+The model can't be checked for all possibile inputs therefore the process \textit{TrayInputLoop} is declared which provides the lot controller with \text{ProvideLotInfo} commands.
+\textit{TrayInputLoop} takes 2 parameters: $\mathit{maxLots} \in \mathbb{N}$ and $\mathit{maxWafersPerLot} \in \mathbb{N}$.
+\textit{TrayInputLoop} calls \textit{ProvideLotInfo} with at most $\mathit{maxWafersPerLot}$ wafers at most $\mathit{maxLots}$ times.
+The number of possible traces for \textit{TrayInputLoop} is:
 $$(\mathit{maxLots}+1) \cdot 3 \cdot \mathit{maxWafersPerLot} \cdot 2$$
 This formula represent the possible number of lots multiplied by the number of recipes multiplied by the maximum number of wafers per lot multiplied by two (i.e.\ whether to calibrate or not)). $\mathit{maxLots} = 10$ and $\mathit{maxWafersPerLot} = 24$ are used during validation of the model.
 
