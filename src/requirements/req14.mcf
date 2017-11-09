@@ -2,7 +2,7 @@
 % Depends on aux1.
 
 % C represents the set of positions where the closing wafers are located
-nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
+(nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
     % Maintain C
     (forall p:RobotPositionT.
         % Prune the robot x positions options that are not allowed
@@ -32,3 +32,30 @@ nu X(C: Set(Position) = {ChuckMeas, ChuckProj}).
     
     % Use C
     [ProjectWafer](val(!(ChuckProj in C)))
+)
+
+&&
+
+% W contains all the positions on which a wafer currently is placed.
+% Initially there are only wafers on ChuckMeas and ChuckProj
+(nu X(W : Set(Position) = {ChuckMeas, ChuckProj}).
+    % Maintain W
+    forall p:RobotPositionT.
+        % Prune the robot x positions options that are not allowed
+        val(p in allowed) => (
+            [RMoveFromTo(robot(p),from(p),to(p))](X(W-{from(p)}))
+            &&
+            [RIdle(robot(p), from(p),to(p))](X(W+{to(p)}))
+        ) &&
+    [(
+        forall p:RobotPositionT.
+        val(p in allowed) => (
+            !RMoveFromTo(robot(p), from(p), to(p)) 
+            &&
+            !RIdle(robot(p), from(p), to(p))
+        )
+    )]X(W) &&
+
+    % Use w
+    [ProjectWafer]val(ChuckProj in W)
+)

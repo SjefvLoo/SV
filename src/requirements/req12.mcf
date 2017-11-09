@@ -13,13 +13,11 @@ nu X(rec: Recipe = RecipeThree, even: Bool = true).
     [(
         forall n:Nat, r: Recipe, b: Bool.(
             !ProvideLotInfo(n,r,b) &&
-            !SwapIdle &&
-            !ProjectWafer
+            !SwapIdle
         )
     )](X(rec,even))&&
     % Use rec and even
     [ProjectWafer](
         (val(rec == RecipeOne => !even)) && 
-        (val(rec == RecipeTwo => even)) && 
-        (X(rec,even))
+        (val(rec == RecipeTwo => even))
     )

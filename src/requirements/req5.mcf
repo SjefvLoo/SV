@@ -1,6 +1,6 @@
 % A chuck will never contain more than 1 wafer.
 % Depends on aux1.
-
+[true*]
 forall p1:RobotPositionT,p2:RobotPositionT .(
     (
         val(p1 in allowed &&
@@ -8,8 +8,8 @@ forall p1:RobotPositionT,p2:RobotPositionT .(
         to(p1) == to(p2) &&
         to(p1) != Tray)
     ) => (
-        [true*
-            .RIdle(robot(p1), from(p1), to(p1))
+        [
+            RIdle(robot(p1), from(p1), to(p1))
             .(forall p3: RobotPositionT.
                 val(p3 in allowed && from(p3) == to(p1)) => (
                     !RMoveFromTo(robot(p3), to(p1), to(p3))

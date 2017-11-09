@@ -2,11 +2,12 @@
 % another RMoveFromTo can occur for that robot.
 % Depends on aux1.
 
+[true*]
 (forall p1:RobotPositionT.
     % Prune the robot x positions options that are not allowed to take place
     val(p1 in allowed) =>
     (
-        [true* . 
+        [
             RMoveFromTo(robot(p1), from(p1), to(p1)) . 
             !RIdle(robot(p1), from(p1), to(p1))* . 
             (exists p2:RobotPositionT.

@@ -36,18 +36,16 @@
 
 &&
 
-% w maps a position to a boolean indicating whether or not a wafers is present.
-% Initially every position is false except ChuckMeas and ChuckProj
-(nu X(w : Position -> Bool = (lambda p:Position. false)
-                                [ChuckMeas -> true]
-                                [ChuckProj -> true]).
-    % Maintain w
+% W contains all the positions on which a wafer currently is placed.
+% Initially there are only wafers on ChuckMeas and ChuckProj
+(nu X(W : Set(Position) = {ChuckMeas, ChuckProj}).
+    % Maintain W
     forall p:RobotPositionT.
         % Prune the robot x positions options that are not allowed
         val(p in allowed) => (
-            [RMoveFromTo(robot(p),from(p),to(p))](X(w[from(p) -> false]))
+            [RMoveFromTo(robot(p),from(p),to(p))](X(W-{from(p)}))
             &&
-            [RIdle(robot(p), from(p),to(p))](X(w[to(p) -> true]))
+            [RIdle(robot(p), from(p),to(p))](X(W+{to(p)}))
         ) &&
     [(
         forall p:RobotPositionT.
@@ -56,8 +54,8 @@
             &&
             !RIdle(robot(p), from(p), to(p))
         )
-    )]X(w) &&
+    )]X(W) &&
 
     % Use w
-    [MeasureWafer]val(w(ChuckMeas))
+    [MeasureWafer]val(ChuckMeas in W)
 )

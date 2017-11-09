@@ -1,30 +1,26 @@
 % Swap can only take place when both meas and proj contain a wafer. 
 % Depends on aux1.
 
-% w maps a position to a boolean indicating whether or not a wafers is present.
-% Initially every position is false except ChuckMeas and ChuckProj
-nu X(w : Position -> Bool = (lambda p:Position. false)
-                                [ChuckMeas -> true]
-                                [ChuckProj -> true]
-    ).
-    % Maintain w
-    (forall p:RobotPositionT.(
-            % Prune the robot x positions options that are not allowed
-            val(p in allowed) => (
-                [RMoveFromTo(robot(p),from(p),to(p))](X(w[from(p) -> false]))
-                &&
-                [RIdle(robot(p), from(p),to(p))](X(w[to(p) -> true]))
-            )
+% W contains all the positions on which a wafer currently is placed.
+% Initially there are only wafers on ChuckMeas and ChuckProj
+(nu X(W : Set(Position) = {ChuckMeas, ChuckProj}).
+    % Maintain W
+    forall p:RobotPositionT.
+        % Prune the robot x positions options that are not allowed
+        val(p in allowed) => (
+            [RMoveFromTo(robot(p),from(p),to(p))](X(W-{from(p)}))
+            &&
+            [RIdle(robot(p), from(p),to(p))](X(W+{to(p)}))
         ) &&
-        [(
-            forall p:RobotPositionT.
-            val(p in allowed) => (
-                !RMoveFromTo(robot(p), from(p), to(p)) 
-                && 
-                !RIdle(robot(p), from(p), to(p))
-            )
-        )]X(w) &&
+    [(
+        forall p:RobotPositionT.
+        val(p in allowed) => (
+            !RMoveFromTo(robot(p), from(p), to(p)) 
+            &&
+            !RIdle(robot(p), from(p), to(p))
+        )
+    )]X(W) &&
         
-        % Use w
-        [Swap](val(w(ChuckMeas) && w(ChuckProj)))
-    )
+    % Use w
+    [Swap](val(ChuckMeas in W && ChuckProj in W))
+)
