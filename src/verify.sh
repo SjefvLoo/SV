@@ -9,7 +9,7 @@ if [ -z "${MCRL2_NAME}" ]; then
 fi
 if [ -z "$1" ]; then
     mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps" || exit 1
-    for file in requirements/req{11,12,13,14,3a,4,5}.mcf; do
+    for file in requirements/*.mcf; do
         before="$(date +%s)"
         echo "${file}"
         result="$(lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
