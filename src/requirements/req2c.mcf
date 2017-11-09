@@ -1,5 +1,19 @@
 % When Finished happens:
 % In and Out contain no wafer.
 
-% Follows from 2a and 2b.
-true
+% Maintain two variables indicating whether or not a wafer is at ChuckIn and
+%   whether or not a wafer is at ChuckOut
+nu X(chuckAtIn: Bool = false, chuckAtOut: Bool = false).(
+    % Maintain
+    [RMoveFromTo(RobotOne, Tray, ChuckIn)]X(true, chuckAtOut) &&
+    [RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas)]X(false, chuckAtOut) &&
+    [RMoveFromTo(RobotOne, ChuckOut, Tray)]X(chuckAtIn, false) &&
+    [RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)]X(chuckAtIn, true) &&
+    [!(RMoveFromTo(RobotOne, Tray, ChuckIn) ||
+        RMoveFromTo(RobotTwo, ChuckIn, ChuckMeas) ||
+        RMoveFromTo(RobotOne, ChuckOut, Tray) ||
+        RMoveFromTo(RobotThree, ChuckMeas, ChuckOut)
+    )]X(chuckAtIn, chuckAtOut) && 
+    % Use
+    [Finished]val(!(chuckAtIn || chuckAtOut))
+)

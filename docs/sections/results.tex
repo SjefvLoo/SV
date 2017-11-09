@@ -18,7 +18,7 @@ RAM: 8 GB\\
 The mCRL2 toolset version ``201707.1 (Release)'' was used to verify the models.
 
 The following command is used to generate the \textit{lps} file:\\
-\begin{lstlisting}[style=sh,caption={mcf2lps}] 
+\begin{lstlisting}[style=sh,caption={mcrl22lps}] 
 mcrl22lps -lregular2 "${MCRL2_NAME}.mcrl2" "${MCRL2_NAME}.lps"
 \end{lstlisting}
 Where \$\{MCRL2\_NAME\}.mcrl2 refers to the mcrl2 file (without filetype suffix) containing the model which can be found in appendix \ref{sec:model}.\\
@@ -29,7 +29,7 @@ lps2pbes "${MCRL2_NAME}.lps" "${file%.mcf}.pbes" "-f${file}" \
 \end{lstlisting}
 Where \$\{file\} refers to an mcf file containing the a modal formula which can be found in appendix \ref{sec:mcf}.\\
 \subsection{Results}
-First the \text{lps} file was generated using the \text{mcf2lps} command above. Second every \textit{mcf} file is checked using the \textit{mcf check} command.
+First the \text{lps} file was generated using the \text{mcrl22lps} command above. Second every \textit{mcf} file is checked using the \textit{mcf check} command.
 Table \ref{tab:results1024} below shows the results.
 \begin{table}[!hb]
     \centering
@@ -40,7 +40,7 @@ Table \ref{tab:results1024} below shows the results.
 			Requirement 1 & true & 0m43s \\ \hline
 			Requirement 2a & true & 0m41s \\ \hline
 			Requirement 2b & true & 1m49s \\ \hline
-			Requirement 2c & true & 0m12s \\ \hline
+			Requirement 2c & true & 0m42s \\ \hline
 			Requirement 3a & true & 0m53s \\ \hline
 			Requirement 3b & true & 0m37s \\ \hline
 			Requirement 3c & true & 0m38s \\ \hline
